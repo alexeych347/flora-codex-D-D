@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --parchment: #F4E4BC;
+  --parchment-dark: #E8D5A3;
+  --ink: #1C1208;
+  --ink-light: #3D2B1F;
+  --gold: #C9A84C;
+  --gold-glow: #F0C060;
+  --forest: #2D5A27;
+  --shadow: rgba(0, 0, 0, 0.6);
+  --common: #8A9B8A;
+  --uncommon: #4A7C59;
+  --rare: #3A5F8A;
+  --legendary: #8B4513;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: 'EB Garamond', serif;
+  background: #0D0A06;
+  color: #1C1208;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(28, 18, 8, 0.1);
+}
+::-webkit-scrollbar-thumb {
+  background: #C9A84C40;
+  border-radius: 2px;
+}
+
+/* Book page styling */
+.book-page {
+  flex: 1;
+  min-height: 100%;
+  background: var(--parchment);
+  position: relative;
+  overflow: hidden;
+}
+
+.book-page-left {
+  background: linear-gradient(to right, #E8D5A3 0%, #F4E4BC 100%);
+}
+
+.book-page-right {
+  background: linear-gradient(to left, #E8D5A3 0%, #F4E4BC 100%);
+}
+
+/* Search input placeholder */
+.search-input::placeholder {
+  color: #3D2B1F;
+  opacity: 0.45;
+  font-style: italic;
+}
+
+/* Prevent text selection on nav buttons */
+.nav-arrow {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Grain overlay for parchment texture */
+.book-page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Legendary glow animation */
+@keyframes legendaryGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(201, 168, 76, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(201, 168, 76, 0.7); }
+}
+
+.legendary-glow {
+  animation: legendaryGlow 3s ease-in-out infinite;
+}
+
+/* Mobile: single page view */
+@media (max-width: 768px) {
+  .book-page-right {
+    display: none !important;
+  }
+  .book-binding {
+    display: none !important;
+  }
+}

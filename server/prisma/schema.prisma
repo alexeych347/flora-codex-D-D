@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Herb {
+  id           String   @id @default(cuid())
+  name         String
+  latinName    String
+  imageUrl     String?
+  rarity       Rarity   @default(COMMON)
+  discoveredAt String?
+  description  String
+  properties   String[]
+  effects      String
+  isUnlocked   Boolean  @default(false)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum Rarity {
+  COMMON
+  UNCOMMON
+  RARE
+  LEGENDARY
+}
