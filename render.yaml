@@ -19,8 +19,9 @@ services:
       - key: CLIENT_URL
         value: https://flora-codex-client.onrender.com
 
-  - type: static
+  - type: web
     name: flora-codex-client
+    env: static
     buildCommand: cd client && npm install && npm run build
     staticPublishPath: ./client/dist
     envVars:
