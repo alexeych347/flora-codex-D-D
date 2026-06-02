@@ -12,7 +12,7 @@ export function GalleryIndex({ herbs, onSelectHerb }: Props) {
       {/* Header */}
       <div className="text-center mb-6">
         <h1 className="font-cinzel text-2xl md:text-3xl mb-1" style={{ color: '#1C1208' }}>
-          Herbarium Codex
+          Flora Codex
         </h1>
         <div className="flex items-center gap-2 justify-center">
           <div className="h-px flex-1" style={{ background: 'linear-gradient(to right, transparent, #C9A84C)' }} />

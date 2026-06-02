@@ -22,5 +22,5 @@ app.use('/api/herbs', herbsRouter);
 app.use('/api/auth', authRouter);
 
 app.listen(PORT, () => {
-  console.log(`🌿 Herbarium Codex API запущен на порту ${PORT}`);
+  console.log(`🌿 Flora Codex API запущен на порту ${PORT}`);
 });
