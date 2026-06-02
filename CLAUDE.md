@@ -18,7 +18,7 @@ npm run build        # tsc → dist/
 npm start            # node dist/server.js
 
 # База данных (нужен запущенный PostgreSQL)
-npx prisma migrate dev --name <name>   # создать и применить миграцию
+npx prisma migrate dev --name <name>   # создать и применить новую миграцию
 npx prisma migrate deploy              # применить существующие (prod)
 npx prisma generate                    # регенерировать клиент после изменений схемы
 npm run seed                           # заполнить тестовыми данными
@@ -52,7 +52,7 @@ cd client && node_modules/.bin/tsc --noEmit
 
 - `GET /api/herbs` с валидным JWT → все поля всех трав
 - `GET /api/herbs` без токена → locked-травы отдаются как `{ id, isUnlocked: false, sortOrder, rarity }` (4 поля)
-- Middleware `optionalAuth` попул `req.isDM = true/false`; `authMiddleware` — требует токен, иначе 401
+- Middleware `optionalAuth` заполняет `req.isDM = true/false`; `authMiddleware` — требует токен, иначе 401
 
 Соответствующий discriminated union на клиенте:
 ```ts
@@ -100,10 +100,22 @@ JWT хранится в `localStorage` как `dm_token`. Axios-interceptor в `
 `client/.env`:
 - `VITE_API_URL` — **пустая строка в dev** (Vite proxy берёт на себя); URL бэкенда в prod
 
+### Prisma и миграции
+
+`server/package.json` содержит `"postinstall": "prisma generate"` — клиент генерируется автоматически после `npm install`.
+
+При изменении `schema.prisma` нужно создать новую миграцию локально:
+```bash
+cd server && npx prisma migrate dev --name <описание_изменения>
+```
+Это создаёт файл в `server/prisma/migrations/` — его нужно закоммитить. На Render `npx prisma migrate deploy` применяет только закоммиченные файлы миграций.
+
+Render buildCommand использует `npm install --include=dev` — это принципиально: `typescript`, `prisma` CLI и все `@types/*` находятся в `devDependencies`, без флага они не установятся в production-окружении и сборка упадёт.
+
 ### Key design decisions
 
-- **Нет тестов** — проект не имеет тестового фреймворка, проверка через TypeScript и ручной запуск
-- **Один PrismaClient на роутер** — экземпляр создаётся в `routes/herbs.ts`, не синглтон. При росте нагрузки стоит вынести в отдельный модуль
+- **Нет тестов** — проверка через TypeScript и ручной запуск
+- **Один PrismaClient на роутер** — экземпляр создаётся в `routes/herbs.ts`, не синглтон
 - **Изображения** — сохраняются в `server/uploads/`, путь записывается в `imageUrl` как `/uploads/filename.ext`, отдаются как статика через `express.static`
 - **Мобильная адаптивность** — на экранах `< md` правая страница книги скрыта (`hidden md:block`), показывается только левая
 - **Шрифты** — Cinzel Decorative (заголовки), EB Garamond (основной текст), Cormorant Garamond italic (латынь). Подключены в `index.html` через Google Fonts
