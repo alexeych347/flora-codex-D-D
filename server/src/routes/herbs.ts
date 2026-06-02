@@ -52,7 +52,8 @@ router.get('/', optionalAuth, async (req: AuthRequest, res: Response) => {
     });
 
     res.json(sanitized);
-  } catch {
+  } catch (err) {
+    console.error('[GET /api/herbs]', err);
     res.status(500).json({ error: 'Ошибка сервера' });
   }
 });
