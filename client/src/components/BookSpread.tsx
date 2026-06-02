@@ -1,5 +1,4 @@
 import { HerbOrStub, isFullHerb, RARITY_COLORS, RARITY_LABELS } from '../types';
-import { GalleryIndex } from './GalleryIndex';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -7,33 +6,31 @@ interface Props {
   currentSpread: number;
   herbs: HerbOrStub[];
   onHerbClick: (herb: HerbOrStub) => void;
+  mobileSide: 'left' | 'right';
+  isMobile: boolean;
 }
 
-export function BookSpread({ currentSpread, herbs, onHerbClick }: Props) {
+export function BookSpread({ currentSpread, herbs, onHerbClick, mobileSide, isMobile }: Props) {
+  const showLeft = !isMobile || mobileSide === 'left';
+  const showRight = !isMobile || mobileSide === 'right';
+  const showBinding = !isMobile;
+
   if (currentSpread === 0) {
     return (
       <>
-        <div className="book-page book-page-left relative">
-          <PageTexture />
-          <GalleryIndex herbs={herbs} onHerbClick={onHerbClick} />
-        </div>
-        <BookBinding />
-        <div className="book-page book-page-right relative hidden md:block">
-          <PageTexture />
-          <div className="h-full flex items-center justify-center">
-            <div className="text-center px-8 opacity-40">
-              <svg width="60" height="70" viewBox="0 0 60 70" fill="none" className="mx-auto mb-3">
-                <line x1="30" y1="65" x2="30" y2="10" stroke="#2D5A27" strokeWidth="2"/>
-                <ellipse cx="30" cy="25" rx="15" ry="20" fill="#4A7C59" opacity="0.7" transform="rotate(-10 30 25)"/>
-                <ellipse cx="14" cy="40" rx="10" ry="14" fill="#4A7C59" opacity="0.5" transform="rotate(15 14 40)"/>
-                <ellipse cx="46" cy="38" rx="10" ry="14" fill="#4A7C59" opacity="0.5" transform="rotate(-15 46 38)"/>
-              </svg>
-              <p className="font-cormorant italic text-base" style={{ color: '#3D2B1F' }}>
-                Выберите траву из оглавления
-              </p>
-            </div>
+        {showLeft && (
+          <div className="book-page book-page-left relative flex-1">
+            <PageTexture />
+            <CoverLeftPage />
           </div>
-        </div>
+        )}
+        {showBinding && <BookBinding />}
+        {showRight && (
+          <div className="book-page book-page-right relative flex-1">
+            <PageTexture />
+            <CoverRightPage />
+          </div>
+        )}
       </>
     );
   }
@@ -44,48 +41,246 @@ export function BookSpread({ currentSpread, herbs, onHerbClick }: Props) {
 
   return (
     <>
-      <div className="book-page book-page-left relative">
-        <PageTexture />
-        <HerbGridPage herbs={leftHerbs} onHerbClick={onHerbClick} />
-      </div>
-      <BookBinding />
-      <div className="book-page book-page-right relative hidden md:block">
-        <PageTexture />
-        <HerbGridPage herbs={rightHerbs} onHerbClick={onHerbClick} />
-      </div>
+      {showLeft && (
+        <div className="book-page book-page-left relative flex-1">
+          <PageTexture />
+          <HerbGridPage herbs={leftHerbs} onHerbClick={onHerbClick} side="left" />
+        </div>
+      )}
+      {showBinding && <BookBinding />}
+      {showRight && (
+        <div className="book-page book-page-right relative flex-1">
+          <PageTexture />
+          <HerbGridPage herbs={rightHerbs} onHerbClick={onHerbClick} side="right" />
+        </div>
+      )}
     </>
   );
 }
 
-interface GridProps {
-  herbs: HerbOrStub[];
-  onHerbClick: (herb: HerbOrStub) => void;
-}
+// ── Cover pages ───────────────────────────────────────────────────────────────
 
-function HerbGridPage({ herbs, onHerbClick }: GridProps) {
+function CoverLeftPage() {
   return (
-    <div className="h-full p-4 grid grid-cols-2 grid-rows-2 gap-3">
-      {[0, 1, 2, 3].map(i => {
-        const herb = herbs[i];
-        if (!herb) {
-          return <EmptySlot key={i} />;
-        }
-        if (!isFullHerb(herb)) {
-          return <LockedHerbCard key={herb.id} herb={herb} />;
-        }
-        return (
-          <button
-            key={herb.id}
-            onClick={() => onHerbClick(herb)}
-            className="text-left transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none group"
-          >
-            <HerbCard herb={herb} />
-          </button>
-        );
-      })}
+    <div className="h-full flex flex-col items-center justify-between p-6 md:p-8">
+      {/* Top ornament */}
+      <div className="w-full flex justify-center flex-shrink-0">
+        <svg width="160" height="20" viewBox="0 0 160 20" fill="none">
+          <path d="M0 10 Q40 3 80 10 Q120 17 160 10" stroke="#C9A84C" strokeWidth="1.5" fill="none" opacity="0.6"/>
+          <circle cx="80" cy="10" r="3" fill="#C9A84C" opacity="0.8"/>
+          <circle cx="48" cy="8" r="1.5" fill="#C9A84C" opacity="0.5"/>
+          <circle cx="112" cy="12" r="1.5" fill="#C9A84C" opacity="0.5"/>
+        </svg>
+      </div>
+
+      {/* Central illustration */}
+      <div className="flex-1 flex items-center justify-center py-4">
+        <svg width="180" height="220" viewBox="0 0 180 220" fill="none" opacity="0.75">
+          {/* Main stem */}
+          <line x1="90" y1="210" x2="90" y2="40" stroke="#2D5A27" strokeWidth="2.5"/>
+          {/* Large central leaf */}
+          <ellipse cx="90" cy="70" rx="28" ry="40" fill="#4A7C59" opacity="0.75" transform="rotate(-8 90 70)"/>
+          {/* Left branch */}
+          <line x1="90" y1="110" x2="50" y2="85" stroke="#2D5A27" strokeWidth="1.5"/>
+          <ellipse cx="38" cy="78" rx="18" ry="26" fill="#4A7C59" opacity="0.6" transform="rotate(20 38 78)"/>
+          {/* Right branch */}
+          <line x1="90" y1="100" x2="130" y2="78" stroke="#2D5A27" strokeWidth="1.5"/>
+          <ellipse cx="142" cy="72" rx="18" ry="26" fill="#4A7C59" opacity="0.6" transform="rotate(-20 142 72)"/>
+          {/* Lower left */}
+          <line x1="90" y1="140" x2="55" y2="125" stroke="#2D5A27" strokeWidth="1.2"/>
+          <ellipse cx="44" cy="118" rx="13" ry="18" fill="#3A5F8A" opacity="0.45" transform="rotate(15 44 118)"/>
+          {/* Lower right */}
+          <line x1="90" y1="150" x2="125" y2="138" stroke="#2D5A27" strokeWidth="1.2"/>
+          <ellipse cx="136" cy="132" rx="13" ry="18" fill="#7B3FA0" opacity="0.4" transform="rotate(-12 136 132)"/>
+          {/* Gold accents */}
+          <circle cx="90" cy="40" r="4" fill="#C9A84C" opacity="0.7"/>
+          <circle cx="30" cy="68" r="2" fill="#C9A84C" opacity="0.5"/>
+          <circle cx="150" cy="62" r="2" fill="#C9A84C" opacity="0.5"/>
+          <circle cx="36" cy="110" r="1.5" fill="#C9A84C" opacity="0.4"/>
+          <circle cx="144" cy="105" r="1.5" fill="#C9A84C" opacity="0.4"/>
+        </svg>
+      </div>
+
+      {/* Title */}
+      <div className="text-center flex-shrink-0 mb-2">
+        <h1
+          className="font-cinzel leading-none tracking-widest mb-3"
+          style={{ color: '#1C1208', fontSize: '28px' }}
+        >
+          FLORA
+        </h1>
+        <div className="flex items-center gap-2 mb-2 justify-center">
+          <div className="h-px flex-1" style={{ background: 'linear-gradient(to right, transparent, #C9A84C)' }} />
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 1 L8.2 5 L12 5 L9 7.5 L10.2 11.5 L7 9 L3.8 11.5 L5 7.5 L2 5 L5.8 5 Z" fill="#C9A84C" opacity="0.8"/>
+          </svg>
+          <div className="h-px flex-1" style={{ background: 'linear-gradient(to left, transparent, #C9A84C)' }} />
+        </div>
+        <h1
+          className="font-cinzel leading-none tracking-widest"
+          style={{ color: '#1C1208', fontSize: '28px' }}
+        >
+          CODEX
+        </h1>
+      </div>
+
+      {/* Rarity legend at bottom */}
+      <RarityLegend />
     </div>
   );
 }
+
+function CoverRightPage() {
+  return (
+    <div className="h-full flex flex-col">
+      {/* Flora Codex title bar — consistent with herb pages */}
+      <FloraCodexTitle />
+
+      {/* Content */}
+      <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-8">
+        {/* Decorative border */}
+        <div
+          className="w-full flex-1 flex flex-col items-center justify-center p-6"
+          style={{
+            border: '1px solid #C9A84C30',
+            background: 'rgba(201,168,76,0.03)',
+          }}
+        >
+          <div className="text-center mb-6">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" className="mx-auto mb-4" opacity="0.5">
+              <circle cx="20" cy="20" r="18" stroke="#C9A84C" strokeWidth="1"/>
+              <circle cx="20" cy="20" r="12" stroke="#C9A84C" strokeWidth="0.5" strokeDasharray="2 2"/>
+              <path d="M20 5 L21.8 14 L30 11 L24.5 18.5 L30 26 L21.8 23 L20 32 L18.2 23 L10 26 L15.5 18.5 L10 11 L18.2 14 Z" fill="#C9A84C" opacity="0.6"/>
+            </svg>
+            <h2
+              className="font-cinzel tracking-widest mb-3"
+              style={{ color: '#1C1208', fontSize: '14px' }}
+            >
+              Предисловие
+            </h2>
+            <div className="h-px mb-4" style={{ background: 'linear-gradient(to right, transparent, #C9A84C60, transparent)' }} />
+          </div>
+
+          <p
+            className="font-garamond text-base leading-relaxed text-center"
+            style={{ color: '#3D2B1F', maxWidth: '280px' }}
+          >
+            Сей кодекс содержит знания о магических растениях, собранных в ходе великих странствий. Каждая трава скрывает в себе тайну, доступную лишь посвящённым.
+          </p>
+
+          <div className="mt-6 flex items-center gap-3">
+            <div className="h-px w-10" style={{ background: '#C9A84C40' }} />
+            <span className="font-cormorant italic text-sm" style={{ color: '#C9A84C', opacity: 0.6 }}>
+              ex herbis natura
+            </span>
+            <div className="h-px w-10" style={{ background: '#C9A84C40' }} />
+          </div>
+
+          {/* Corner ornaments */}
+          {['top-2 left-2', 'top-2 right-2', 'bottom-2 left-2', 'bottom-2 right-2'].map((pos, i) => (
+            <div
+              key={i}
+              className={`absolute ${pos} w-5 h-5`}
+              style={{
+                border: '1px solid #C9A84C40',
+                borderRadius: 0,
+                transform: i === 1 ? 'scaleX(-1)' : i === 2 ? 'scaleY(-1)' : i === 3 ? 'scale(-1)' : 'none',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Herb grid pages ────────────────────────────────────────────────────────────
+
+interface GridProps {
+  herbs: HerbOrStub[];
+  onHerbClick: (herb: HerbOrStub) => void;
+  side: 'left' | 'right';
+}
+
+function HerbGridPage({ herbs, onHerbClick, side }: GridProps) {
+  return (
+    <div className="h-full flex flex-col">
+      {/* Right pages: Flora Codex title at top */}
+      {side === 'right' && <FloraCodexTitle />}
+
+      {/* Herb grid — flex-1 fills remaining space, min-h-0 enables overflow */}
+      <div className="flex-1 p-3 md:p-4 grid grid-cols-2 grid-rows-2 gap-2 md:gap-3 min-h-0">
+        {[0, 1, 2, 3].map(i => {
+          const herb = herbs[i];
+          if (!herb) {
+            return <EmptySlot key={i} />;
+          }
+          if (!isFullHerb(herb)) {
+            return <LockedHerbCard key={herb.id} herb={herb} />;
+          }
+          return (
+            <button
+              key={herb.id}
+              onClick={() => onHerbClick(herb)}
+              className="text-left transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none"
+            >
+              <HerbCard herb={herb} />
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Left pages: rarity legend at bottom */}
+      {side === 'left' && <RarityLegend />}
+    </div>
+  );
+}
+
+// ── Shared page elements ───────────────────────────────────────────────────────
+
+function FloraCodexTitle() {
+  return (
+    <div
+      className="flex-shrink-0 text-center px-4 py-2"
+      style={{ borderBottom: '1px solid #C9A84C25' }}
+    >
+      <p
+        className="font-cinzel tracking-widest"
+        style={{ color: '#1C1208', fontSize: '10px', opacity: 0.6 }}
+      >
+        ✦ Flora Codex — Атлас магических растений ✦
+      </p>
+    </div>
+  );
+}
+
+function RarityLegend() {
+  return (
+    <div
+      className="flex-shrink-0 px-3 py-2"
+      style={{ borderTop: '1px solid #C9A84C25' }}
+    >
+      <div className="flex flex-wrap justify-center gap-x-3 gap-y-0.5">
+        {(['COMMON', 'UNCOMMON', 'RARE', 'VERY_RARE'] as const).map(r => (
+          <div key={r} className="flex items-center gap-1">
+            <div
+              className="w-2 h-2 rounded-full flex-shrink-0"
+              style={{ background: RARITY_COLORS[r] }}
+            />
+            <span
+              className="font-garamond"
+              style={{ color: '#3D2B1F', fontSize: '9px', opacity: 0.7 }}
+            >
+              {RARITY_LABELS[r]}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Herb cards ─────────────────────────────────────────────────────────────────
 
 function HerbCard({ herb }: { herb: Extract<HerbOrStub, { isUnlocked: true }> }) {
   const color = RARITY_COLORS[herb.rarity];
@@ -129,16 +324,10 @@ function HerbCard({ herb }: { herb: Extract<HerbOrStub, { isUnlocked: true }> })
       {/* Info */}
       <div className="flex-shrink-0 px-2 py-2">
         <p
-          className="font-cinzel leading-tight mb-1 truncate"
-          style={{ color: '#1C1208', fontSize: '11px' }}
+          className="font-cinzel leading-tight mb-1.5 truncate"
+          style={{ color: '#1C1208', fontSize: '13px' }}
         >
           {herb.name}
-        </p>
-        <p
-          className="font-cormorant italic truncate mb-1.5"
-          style={{ color: '#3D2B1F', opacity: 0.65, fontSize: '10px' }}
-        >
-          {herb.latinName}
         </p>
         <span
           className="inline-block px-1.5 py-0.5 font-garamond tracking-wide uppercase"
@@ -146,7 +335,7 @@ function HerbCard({ herb }: { herb: Extract<HerbOrStub, { isUnlocked: true }> })
             color: color,
             border: `1px solid ${color}50`,
             backgroundColor: `${color}12`,
-            fontSize: '8px',
+            fontSize: '10px',
           }}
         >
           {RARITY_LABELS[herb.rarity]}
@@ -212,16 +401,21 @@ function LockedHerbCard({ herb }: { herb: Extract<HerbOrStub, { isUnlocked: fals
         background: `linear-gradient(135deg, rgba(28,18,8,0.1) 0%, rgba(28,18,8,0.04) 100%)`,
       }}
     >
-      <div style={{ filter: 'blur(1px)', opacity: 0.35 }}>
+      <div style={{ filter: 'blur(1px)', opacity: 0.3 }}>
         <HerbMiniIllustration rarity={herb.rarity} color={color} />
       </div>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <svg width="20" height="24" viewBox="0 0 24 28" fill="none" className="mb-1" opacity="0.45">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+        <svg width="22" height="26" viewBox="0 0 24 28" fill="none" opacity="0.5">
           <rect x="3" y="12" width="18" height="14" rx="2" fill="#1C1208"/>
           <path d="M7 12V8a5 5 0 0110 0v4" stroke="#1C1208" strokeWidth="2" fill="none"/>
           <circle cx="12" cy="19" r="2" fill="#F4E4BC"/>
         </svg>
-        <p className="font-garamond italic" style={{ color: '#3D2B1F', opacity: 0.4, fontSize: '10px' }}>???</p>
+        <p
+          className="font-garamond italic text-center"
+          style={{ color: '#3D2B1F', opacity: 0.5, fontSize: '12px' }}
+        >
+          Не изучено
+        </p>
       </div>
     </div>
   );
@@ -255,7 +449,7 @@ function PageTexture() {
 function BookBinding() {
   return (
     <div
-      className="book-binding flex-shrink-0 hidden md:block"
+      className="book-binding flex-shrink-0"
       style={{
         width: '24px',
         background: 'linear-gradient(to right, rgba(28,18,8,0.15) 0%, rgba(28,18,8,0.3) 40%, rgba(28,18,8,0.15) 100%)',

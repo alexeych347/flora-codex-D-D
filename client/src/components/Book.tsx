@@ -36,7 +36,19 @@ const pageVariants = {
 };
 
 export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
-  const { currentSpread, direction, totalSpreads, canGoNext, canGoPrev, goToNext, goToPrev } = useBook(herbs.length);
+  const {
+    currentSpread,
+    direction,
+    totalSpreads,
+    canGoNext,
+    canGoPrev,
+    goToNext,
+    goToPrev,
+    mobileSide,
+    isMobile,
+    animationKey,
+  } = useBook(herbs.length);
+
   const [showLogin, setShowLogin] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
   const [selectedHerb, setSelectedHerb] = useState<Herb | null>(null);
@@ -51,26 +63,46 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
     setSelectedHerb(herb);
   };
 
+  const handlePanEnd = (_e: unknown, info: { offset: { x: number } }) => {
+    if (!isMobile) return;
+    if (Math.abs(info.offset.x) < 60) return;
+    if (info.offset.x < 0) goToNext();
+    else goToPrev();
+  };
+
+  // Spread label for counter
+  const spreadLabel = (() => {
+    if (currentSpread === 0) return 'Обложка';
+    if (!isMobile) return `Разворот ${currentSpread} / ${totalSpreads}`;
+    const totalMobilePages = 1 + totalSpreads * 2;
+    const mobileIdx = currentSpread === 0 ? 0 : (currentSpread - 1) * 2 + (mobileSide === 'left' ? 1 : 2);
+    return `Страница ${mobileIdx + 1} / ${totalMobilePages}`;
+  })();
+
   return (
     <div className="book-app min-h-screen flex flex-col" style={{ background: '#0D0A06' }}>
-      {/* Top bar */}
+      {/* Top bar — high z-index so search dropdown overlaps the book */}
       <div
-        className="top-bar flex items-center justify-between px-4 md:px-8 py-3 flex-shrink-0"
+        className="top-bar flex items-center justify-between px-3 md:px-8 py-3 flex-shrink-0"
         style={{
           background: 'rgba(28,18,8,0.95)',
           borderBottom: '1px solid #C9A84C20',
           backdropFilter: 'blur(8px)',
+          position: 'relative',
+          zIndex: 100,
         }}
       >
-        <span className="font-cinzel text-sm tracking-widest" style={{ color: '#C9A84C', opacity: 0.8 }}>
+        <span className="font-cinzel text-xs md:text-sm tracking-widest flex-shrink-0" style={{ color: '#C9A84C', opacity: 0.8 }}>
           ✦ Flora Codex
         </span>
 
-        <SearchBar onSelectHerb={handleSearchSelect} />
+        <div className="flex-1 mx-3 md:mx-6">
+          <SearchBar onSelectHerb={handleSearchSelect} />
+        </div>
 
         <button
           onClick={() => isDM ? setShowPanel(p => !p) : setShowLogin(true)}
-          className="dm-key-btn p-2 transition-opacity hover:opacity-80"
+          className="dm-key-btn p-2 flex-shrink-0 transition-opacity hover:opacity-80"
           title={isDM ? 'Панель DM' : 'Войти как DM'}
           style={{ color: '#C9A84C', opacity: isDM ? 1 : 0.35 }}
         >
@@ -81,8 +113,8 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
       </div>
 
       {/* Book + navigation row */}
-      <div className="flex-1 flex items-center justify-center p-4 md:p-8" style={{ perspective: '1500px' }}>
-        <div className="flex items-center gap-4 w-full" style={{ maxWidth: '1080px' }}>
+      <div className="flex-1 flex items-center justify-center p-2 md:p-4" style={{ perspective: '1500px' }}>
+        <div className="flex items-center gap-2 md:gap-4 w-full" style={{ maxWidth: '1440px' }}>
 
           {/* Left nav arrow */}
           <button
@@ -90,8 +122,8 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
             disabled={!canGoPrev}
             className="flex-shrink-0 flex items-center justify-center rounded-lg transition-all duration-200"
             style={{
-              width: '52px',
-              height: '80px',
+              width: isMobile ? '40px' : '52px',
+              height: isMobile ? '60px' : '80px',
               background: canGoPrev ? 'rgba(201,168,76,0.12)' : 'transparent',
               border: canGoPrev ? '1px solid rgba(201,168,76,0.35)' : '1px solid transparent',
               color: canGoPrev ? '#C9A84C' : 'transparent',
@@ -99,24 +131,24 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
               boxShadow: canGoPrev ? '0 2px 12px rgba(0,0,0,0.3)' : 'none',
             }}
           >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <svg width={isMobile ? 22 : 28} height={isMobile ? 22 : 28} viewBox="0 0 24 24" fill="none">
               <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
 
           {/* Book */}
-          <div className="flex-1 flex flex-col items-center gap-3">
+          <div className="flex-1 flex flex-col items-center gap-2 md:gap-3">
             <div
               className="book relative flex items-stretch animate-fade-in w-full"
               style={{
-                minHeight: '560px',
+                minHeight: isMobile ? '480px' : '680px',
                 background: '#F4E4BC',
                 boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.15), 8px 8px 30px rgba(0,0,0,0.5)',
               }}
             >
               <AnimatePresence mode="wait" custom={direction}>
                 <motion.div
-                  key={currentSpread}
+                  key={animationKey}
                   custom={direction}
                   variants={pageVariants}
                   initial="initial"
@@ -124,11 +156,14 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
                   exit="exit"
                   className="spread-wrapper flex w-full"
                   style={{ transformStyle: 'preserve-3d' }}
+                  onPanEnd={handlePanEnd}
                 >
                   <BookSpread
                     currentSpread={currentSpread}
                     herbs={herbs}
                     onHerbClick={handleHerbClick}
+                    mobileSide={mobileSide}
+                    isMobile={isMobile}
                   />
                 </motion.div>
               </AnimatePresence>
@@ -137,12 +172,19 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
             {/* Spread counter */}
             {totalSpreads > 0 && (
               <div className="flex items-center gap-3">
-                <div className="h-px w-12" style={{ background: 'linear-gradient(to right, transparent, rgba(201,168,76,0.3))' }} />
-                <span className="font-cormorant italic text-base" style={{ color: '#C9A84C', opacity: 0.65 }}>
-                  {currentSpread === 0 ? 'Оглавление' : `Разворот ${currentSpread} / ${totalSpreads}`}
+                <div className="h-px w-8 md:w-12" style={{ background: 'linear-gradient(to right, transparent, rgba(201,168,76,0.3))' }} />
+                <span className="font-cormorant italic text-sm md:text-base" style={{ color: '#C9A84C', opacity: 0.65 }}>
+                  {spreadLabel}
                 </span>
-                <div className="h-px w-12" style={{ background: 'linear-gradient(to left, transparent, rgba(201,168,76,0.3))' }} />
+                <div className="h-px w-8 md:w-12" style={{ background: 'linear-gradient(to left, transparent, rgba(201,168,76,0.3))' }} />
               </div>
+            )}
+
+            {/* Mobile swipe hint — shown only on mobile when there are multiple pages */}
+            {isMobile && totalSpreads > 0 && (
+              <p className="font-garamond italic text-xs" style={{ color: '#C9A84C', opacity: 0.4 }}>
+                Проведите по книге для листания
+              </p>
             )}
           </div>
 
@@ -152,8 +194,8 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
             disabled={!canGoNext}
             className="flex-shrink-0 flex items-center justify-center rounded-lg transition-all duration-200"
             style={{
-              width: '52px',
-              height: '80px',
+              width: isMobile ? '40px' : '52px',
+              height: isMobile ? '60px' : '80px',
               background: canGoNext ? 'rgba(201,168,76,0.12)' : 'transparent',
               border: canGoNext ? '1px solid rgba(201,168,76,0.35)' : '1px solid transparent',
               color: canGoNext ? '#C9A84C' : 'transparent',
@@ -161,7 +203,7 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
               boxShadow: canGoNext ? '0 2px 12px rgba(0,0,0,0.3)' : 'none',
             }}
           >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <svg width={isMobile ? 22 : 28} height={isMobile ? 22 : 28} viewBox="0 0 24 24" fill="none">
               <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>

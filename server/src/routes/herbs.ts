@@ -37,7 +37,7 @@ const upload = multer({
 // GET /api/herbs
 router.get('/', optionalAuth, async (req: AuthRequest, res: Response) => {
   try {
-    const herbs = await prisma.herb.findMany({ orderBy: { sortOrder: 'asc' } });
+    const herbs = await prisma.herb.findMany({ orderBy: { createdAt: 'asc' } });
 
     if (req.isDM) {
       res.json(herbs);
@@ -69,7 +69,7 @@ router.get('/search', optionalAuth, async (req: AuthRequest, res: Response) => {
   try {
     const herbs = await prisma.herb.findMany({
       where: req.isDM ? {} : { isUnlocked: true },
-      orderBy: { sortOrder: 'asc' },
+      orderBy: { createdAt: 'asc' },
     });
 
     const results = herbs.filter(herb =>
@@ -114,7 +114,7 @@ router.post('/', authMiddleware, async (req: Request, res: Response) => {
     const herb = await prisma.herb.create({
       data: {
         name,
-        latinName,
+        latinName: latinName || '',
         imageUrl,
         rarity: rarity || 'COMMON',
         discoveredAt,

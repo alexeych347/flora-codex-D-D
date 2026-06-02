@@ -10,16 +10,6 @@ export function HerbPageRight({ herb, pageNumber }: Props) {
 
   return (
     <div className="page-right h-full flex flex-col p-6 md:p-8 relative overflow-y-auto">
-      {/* Latin name */}
-      <div className="text-center mb-4">
-        <p
-          className="font-cormorant italic text-2xl md:text-3xl"
-          style={{ color: '#3D2B1F', opacity: 0.85 }}
-        >
-          {herb.latinName}
-        </p>
-      </div>
-
       {/* Divider */}
       <div className="ornament-divider flex items-center gap-3 mb-5">
         <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, transparent, ${rarityColor})` }} />

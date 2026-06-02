@@ -96,12 +96,4 @@ body {
   animation: legendaryGlow 3s ease-in-out infinite;
 }
 
-/* Mobile: single page view */
-@media (max-width: 768px) {
-  .book-page-right {
-    display: none !important;
-  }
-  .book-binding {
-    display: none !important;
-  }
-}
+/* Mobile page visibility is handled via JS (isMobile + mobileSide props in BookSpread) */

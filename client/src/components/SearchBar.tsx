@@ -113,13 +113,10 @@ export function SearchBar({ onSelectHerb }: Props) {
             <button
               key={herb.id}
               onClick={() => handleSelect(herb)}
-              className="search-result w-full text-left px-4 py-2 transition-colors duration-150 hover:bg-gold/20 flex flex-col gap-0.5"
+              className="search-result w-full text-left px-4 py-2 transition-colors duration-150 hover:bg-gold/20"
             >
-              <span className="font-cinzel text-xs" style={{ color: '#1C1208', fontSize: '11px' }}>
+              <span className="font-cinzel text-xs" style={{ color: '#1C1208', fontSize: '12px' }}>
                 {highlight(herb.name)}
-              </span>
-              <span className="font-cormorant italic text-xs" style={{ color: '#3D2B1F', opacity: 0.7 }}>
-                {herb.latinName}
               </span>
             </button>
           ))}

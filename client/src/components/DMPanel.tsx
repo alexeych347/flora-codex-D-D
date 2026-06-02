@@ -1,5 +1,5 @@
 import { useState, useRef, ChangeEvent } from 'react';
-import { HerbOrStub, isFullHerb, Herb, RARITY_LABELS, Rarity } from '../types';
+import { HerbOrStub, Herb, RARITY_LABELS, Rarity } from '../types';
 import { herbsApi, HerbPayload } from '../api/herbs';
 
 interface Props {
@@ -9,32 +9,31 @@ interface Props {
   onRefresh: () => void;
 }
 
-// Form type with boolean isUnlocked (not discriminated)
 interface HerbForm {
   id?: string;
   name?: string;
-  latinName?: string;
   imageUrl?: string | null;
   rarity?: Rarity;
-  discoveredAt?: string | null;
   description?: string;
   properties?: string[];
   effects?: string;
   isUnlocked?: boolean;
-  sortOrder?: number;
 }
 
 const EMPTY_FORM: HerbForm = {
   name: '',
-  latinName: '',
   rarity: 'COMMON',
-  discoveredAt: '',
   description: '',
   properties: [],
   effects: '',
   isUnlocked: false,
-  sortOrder: 0,
 };
+
+// DM always receives full herb data from server (JWT auth), including locked herbs.
+// Safe to cast HerbOrStub → Herb in DM panel context.
+function asDMHerb(herb: HerbOrStub): Herb {
+  return herb as unknown as Herb;
+}
 
 export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
   const [editingHerb, setEditingHerb] = useState<HerbForm | null>(null);
@@ -53,10 +52,19 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
     setShowForm(true);
   };
 
-  const startEdit = (herb: Herb) => {
-    setEditingId(herb.id);
-    setEditingHerb({ ...herb });
-    setPropertiesInput(herb.properties.join(', '));
+  const startEdit = (herb: HerbOrStub) => {
+    const h = asDMHerb(herb);
+    setEditingId(h.id);
+    setEditingHerb({
+      name: h.name,
+      imageUrl: h.imageUrl,
+      rarity: h.rarity,
+      description: h.description,
+      properties: h.properties,
+      effects: h.effects,
+      isUnlocked: h.isUnlocked,
+    });
+    setPropertiesInput((h.properties || []).join(', '));
     setShowForm(true);
   };
 
@@ -86,6 +94,7 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
     try {
       const data: HerbPayload = {
         ...editingHerb,
+        latinName: '',
         properties: propertiesInput.split(',').map(p => p.trim()).filter(Boolean),
       };
       if (editingId) {
@@ -157,9 +166,9 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
       {/* Herb list */}
       <div className="flex-1 overflow-y-auto py-2">
         {herbs.map(herb => {
-          const full = isFullHerb(herb);
+          const h = asDMHerb(herb);
           const id = herb.id;
-          const name = full ? herb.name : '???';
+          const name = h.name || 'Без названия';
           const unlocked = herb.isUnlocked;
 
           return (
@@ -170,10 +179,15 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
             >
               <div className="flex items-center justify-between gap-2">
                 <span
-                  className="font-garamond text-xs flex-1 truncate"
-                  style={{ color: unlocked ? '#F4E4BC' : '#F4E4BC50' }}
+                  className="font-garamond text-sm flex-1 truncate"
+                  style={{ color: unlocked ? '#F4E4BC' : '#F4E4BC80' }}
                 >
                   {name}
+                  {!unlocked && (
+                    <span className="ml-1 font-garamond italic" style={{ color: '#C9A84C60', fontSize: '11px' }}>
+                      (не изучено)
+                    </span>
+                  )}
                 </span>
 
                 {/* Toggle */}
@@ -197,36 +211,35 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
                 </button>
               </div>
 
-              {full && (
-                <div className="flex gap-1">
-                  <button
-                    onClick={() => startEdit(herb)}
-                    className="font-garamond text-xs px-2 py-0.5 transition-opacity hover:opacity-80"
-                    style={{ color: '#C9A84C', border: '1px solid #C9A84C30', fontSize: '10px' }}
-                  >
-                    Ред.
-                  </button>
-                  <label
-                    className="font-garamond text-xs px-2 py-0.5 cursor-pointer transition-opacity hover:opacity-80"
-                    style={{ color: '#C9A84C', border: '1px solid #C9A84C30', fontSize: '10px' }}
-                  >
-                    {uploadingId === id ? '...' : 'Фото'}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={e => handleImageUpload(id, e)}
-                    />
-                  </label>
-                  <button
-                    onClick={() => handleDelete(id, herb.name)}
-                    className="font-garamond text-xs px-2 py-0.5 transition-opacity hover:opacity-80 ml-auto"
-                    style={{ color: '#c0392b', border: '1px solid #c0392b30', fontSize: '10px' }}
-                  >
-                    Удал.
-                  </button>
-                </div>
-              )}
+              {/* Always show Edit/Photo/Delete in DM panel — DM has full access */}
+              <div className="flex gap-1">
+                <button
+                  onClick={() => startEdit(herb)}
+                  className="font-garamond text-xs px-2 py-0.5 transition-opacity hover:opacity-80"
+                  style={{ color: '#C9A84C', border: '1px solid #C9A84C30', fontSize: '11px' }}
+                >
+                  Ред.
+                </button>
+                <label
+                  className="font-garamond text-xs px-2 py-0.5 cursor-pointer transition-opacity hover:opacity-80"
+                  style={{ color: '#C9A84C', border: '1px solid #C9A84C30', fontSize: '11px' }}
+                >
+                  {uploadingId === id ? '...' : 'Фото'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={e => handleImageUpload(id, e)}
+                  />
+                </label>
+                <button
+                  onClick={() => handleDelete(id, name)}
+                  className="font-garamond text-xs px-2 py-0.5 transition-opacity hover:opacity-80 ml-auto"
+                  style={{ color: '#c0392b', border: '1px solid #c0392b30', fontSize: '11px' }}
+                >
+                  Удал.
+                </button>
+              </div>
             </div>
           );
         })}
@@ -266,26 +279,21 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
-            {([
-              ['name', 'Название', 'text'],
-              ['latinName', 'Латынь', 'text'],
-              ['discoveredAt', 'Дата обнаружения', 'text'],
-              ['sortOrder', 'Порядок', 'number'],
-            ] as [keyof HerbForm, string, string][]).map(([key, label, type]) => (
-              <div key={key}>
-                <label className="block font-garamond text-xs mb-1" style={{ color: '#C9A84C', opacity: 0.7 }}>
-                  {label}
-                </label>
-                <input
-                  type={type}
-                  value={String(editingHerb[key] ?? '')}
-                  onChange={e => setEditingHerb(h => ({ ...h!, [key]: type === 'number' ? Number(e.target.value) : e.target.value }))}
-                  className="w-full px-3 py-1.5 font-garamond text-xs focus:outline-none"
-                  style={{ background: '#2D1810', border: '1px solid #C9A84C20', color: '#F4E4BC' }}
-                />
-              </div>
-            ))}
+            {/* Name */}
+            <div>
+              <label className="block font-garamond text-xs mb-1" style={{ color: '#C9A84C', opacity: 0.7 }}>
+                Название
+              </label>
+              <input
+                type="text"
+                value={editingHerb.name ?? ''}
+                onChange={e => setEditingHerb(h => ({ ...h!, name: e.target.value }))}
+                className="w-full px-3 py-1.5 font-garamond text-sm focus:outline-none"
+                style={{ background: '#2D1810', border: '1px solid #C9A84C20', color: '#F4E4BC' }}
+              />
+            </div>
 
+            {/* Rarity */}
             <div>
               <label className="block font-garamond text-xs mb-1" style={{ color: '#C9A84C', opacity: 0.7 }}>
                 Редкость
@@ -293,7 +301,7 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
               <select
                 value={editingHerb.rarity || 'COMMON'}
                 onChange={e => setEditingHerb(h => ({ ...h!, rarity: e.target.value as Rarity }))}
-                className="w-full px-3 py-1.5 font-garamond text-xs focus:outline-none"
+                className="w-full px-3 py-1.5 font-garamond text-sm focus:outline-none"
                 style={{ background: '#2D1810', border: '1px solid #C9A84C20', color: '#F4E4BC' }}
               >
                 {(Object.entries(RARITY_LABELS) as [Rarity, string][]).map(([v, l]) => (
@@ -302,6 +310,7 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
               </select>
             </div>
 
+            {/* Description */}
             <div>
               <label className="block font-garamond text-xs mb-1" style={{ color: '#C9A84C', opacity: 0.7 }}>
                 Описание
@@ -310,11 +319,12 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
                 value={editingHerb.description || ''}
                 onChange={e => setEditingHerb(h => ({ ...h!, description: e.target.value }))}
                 rows={4}
-                className="w-full px-3 py-1.5 font-garamond text-xs focus:outline-none resize-none"
+                className="w-full px-3 py-1.5 font-garamond text-sm focus:outline-none resize-none"
                 style={{ background: '#2D1810', border: '1px solid #C9A84C20', color: '#F4E4BC' }}
               />
             </div>
 
+            {/* Properties */}
             <div>
               <label className="block font-garamond text-xs mb-1" style={{ color: '#C9A84C', opacity: 0.7 }}>
                 Свойства (через запятую)
@@ -324,11 +334,12 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
                 value={propertiesInput}
                 onChange={e => setPropertiesInput(e.target.value)}
                 placeholder="Лечебная, Ядовитая..."
-                className="w-full px-3 py-1.5 font-garamond text-xs focus:outline-none"
+                className="w-full px-3 py-1.5 font-garamond text-sm focus:outline-none"
                 style={{ background: '#2D1810', border: '1px solid #C9A84C20', color: '#F4E4BC' }}
               />
             </div>
 
+            {/* Effects */}
             <div>
               <label className="block font-garamond text-xs mb-1" style={{ color: '#C9A84C', opacity: 0.7 }}>
                 Эффекты D&D
@@ -337,11 +348,12 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
                 value={editingHerb.effects || ''}
                 onChange={e => setEditingHerb(h => ({ ...h!, effects: e.target.value }))}
                 rows={3}
-                className="w-full px-3 py-1.5 font-garamond text-xs focus:outline-none resize-none"
+                className="w-full px-3 py-1.5 font-garamond text-sm focus:outline-none resize-none"
                 style={{ background: '#2D1810', border: '1px solid #C9A84C20', color: '#F4E4BC' }}
               />
             </div>
 
+            {/* Unlocked checkbox */}
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -350,7 +362,7 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
                 className="w-4 h-4"
                 style={{ accentColor: '#C9A84C' }}
               />
-              <span className="font-garamond text-xs" style={{ color: '#F4E4BC', opacity: 0.7 }}>
+              <span className="font-garamond text-sm" style={{ color: '#F4E4BC', opacity: 0.7 }}>
                 Разблокирована для игроков
               </span>
             </label>
@@ -359,7 +371,7 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
           <div className="flex-shrink-0 p-4 flex gap-2" style={{ borderTop: '1px solid #C9A84C20' }}>
             <button
               onClick={() => { setShowForm(false); setEditingHerb(null); }}
-              className="flex-1 py-2 font-garamond text-xs transition-opacity"
+              className="flex-1 py-2 font-garamond text-sm transition-opacity"
               style={{ border: '1px solid #C9A84C30', color: '#C9A84C', opacity: 0.6 }}
             >
               Отмена

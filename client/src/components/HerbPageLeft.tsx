@@ -91,14 +91,6 @@ export function HerbPageLeft({ herb, apiUrl }: Props) {
           </span>
         </div>
 
-        {herb.discoveredAt && (
-          <p
-            className="font-garamond text-sm italic opacity-70 mt-1"
-            style={{ color: '#3D2B1F' }}
-          >
-            Обнаружена: {herb.discoveredAt}
-          </p>
-        )}
       </div>
 
       <div className="ornament-bottom w-full flex justify-center mt-4">
