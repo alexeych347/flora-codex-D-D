@@ -1,24 +1,24 @@
--- Rename LEGENDARY → VERY_RARE in Rarity enum
+-- PostgreSQL does not allow using a newly added enum value in the same
+-- transaction where it was added (error 55P04). We split into two transactions
+-- via an explicit COMMIT so Prisma's outer transaction ends after ADD VALUE.
 
--- Step 1: Add VERY_RARE to the existing enum (PostgreSQL allows adding values)
-ALTER TYPE "Rarity" ADD VALUE 'VERY_RARE';
+-- Transaction 1: add the new enum value and commit immediately.
+ALTER TYPE "Rarity" ADD VALUE IF NOT EXISTS 'VERY_RARE';
 
--- Step 2: Update all existing rows that use LEGENDARY
+COMMIT;
+
+-- Transaction 2: now VERY_RARE is visible — use it, then rebuild the enum
+-- without LEGENDARY.
 UPDATE "Herb" SET rarity = 'VERY_RARE' WHERE rarity = 'LEGENDARY';
 
--- Step 3: Recreate the enum without LEGENDARY
+DROP TYPE IF EXISTS "Rarity_new";
 CREATE TYPE "Rarity_new" AS ENUM ('COMMON', 'UNCOMMON', 'RARE', 'VERY_RARE');
 
--- Step 4: Drop the column default (it references the old enum type)
 ALTER TABLE "Herb" ALTER COLUMN "rarity" DROP DEFAULT;
-
--- Step 5: Cast the column to the new enum type
 ALTER TABLE "Herb" ALTER COLUMN "rarity" TYPE "Rarity_new" USING rarity::text::"Rarity_new";
 
--- Step 6: Swap type names
 ALTER TYPE "Rarity" RENAME TO "Rarity_old";
 ALTER TYPE "Rarity_new" RENAME TO "Rarity";
 DROP TYPE "Rarity_old";
 
--- Step 7: Restore the default
 ALTER TABLE "Herb" ALTER COLUMN "rarity" SET DEFAULT 'COMMON'::"Rarity";
