@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { HerbOrStub } from '../types';
+import { useState } from 'react';
+import { Herb, HerbOrStub, isFullHerb } from '../types';
 import { BookSpread } from './BookSpread';
 import { useBook } from '../hooks/useBook';
 import { SearchBar } from './SearchBar';
 import { DMPanel } from './DMPanel';
 import { DMLogin } from './DMLogin';
-import { useState } from 'react';
+import { HerbDetailModal } from './HerbDetailModal';
 
 interface Props {
   herbs: HerbOrStub[];
@@ -35,9 +36,20 @@ const pageVariants = {
 };
 
 export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
-  const { currentPage, direction, canGoNext, canGoPrev, goToNext, goToPrev, goToHerb } = useBook(herbs.length);
+  const { currentSpread, direction, totalSpreads, canGoNext, canGoPrev, goToNext, goToPrev } = useBook(herbs.length);
   const [showLogin, setShowLogin] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
+  const [selectedHerb, setSelectedHerb] = useState<Herb | null>(null);
+
+  const handleHerbClick = (herb: HerbOrStub) => {
+    if (isFullHerb(herb)) {
+      setSelectedHerb(herb);
+    }
+  };
+
+  const handleSearchSelect = (herb: Herb) => {
+    setSelectedHerb(herb);
+  };
 
   return (
     <div className="book-app min-h-screen flex flex-col" style={{ background: '#0D0A06' }}>
@@ -50,17 +62,12 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
           backdropFilter: 'blur(8px)',
         }}
       >
-        <button
-          onClick={() => goToHerb(-1)}
-          className="font-cinzel text-xs tracking-widest transition-opacity hover:opacity-80"
-          style={{ color: '#C9A84C', opacity: 0.8 }}
-        >
-          ✦ Гербарий
-        </button>
+        <span className="font-cinzel text-sm tracking-widest" style={{ color: '#C9A84C', opacity: 0.8 }}>
+          ✦ Flora Codex
+        </span>
 
-        <SearchBar onSelectHerb={goToHerb} herbs={herbs} />
+        <SearchBar onSelectHerb={handleSearchSelect} />
 
-        {/* DM key button */}
         <button
           onClick={() => isDM ? setShowPanel(p => !p) : setShowLogin(true)}
           className="dm-key-btn p-2 transition-opacity hover:opacity-80"
@@ -73,80 +80,92 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
         </button>
       </div>
 
-      {/* Book container */}
-      <div className="book-container flex-1 flex items-center justify-center p-4 md:p-8" style={{ perspective: '1500px' }}>
-        <div
-          className="book relative flex items-stretch animate-fade-in"
-          style={{
-            maxWidth: '960px',
-            width: '100%',
-            minHeight: '560px',
-            background: '#F4E4BC',
-            boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.15), 8px 8px 30px rgba(0,0,0,0.5)',
-          }}
-        >
-          {/* Nav arrow left */}
-          {canGoPrev && (
-            <button
-              onClick={goToPrev}
-              className="nav-arrow nav-arrow-left absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full px-2 py-6 flex items-center transition-opacity hover:opacity-100 opacity-60 z-10"
-              style={{ color: '#C9A84C' }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </button>
-          )}
+      {/* Book + navigation row */}
+      <div className="flex-1 flex items-center justify-center p-4 md:p-8" style={{ perspective: '1500px' }}>
+        <div className="flex items-center gap-4 w-full" style={{ maxWidth: '1080px' }}>
 
-          {/* Pages */}
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={currentPage}
-              custom={direction}
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              className="spread-wrapper flex w-full"
-              style={{ transformStyle: 'preserve-3d' }}
-            >
-              <BookSpread
-                currentPage={currentPage}
-                herbs={herbs}
-                onSelectHerb={goToHerb}
-              />
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Nav arrow right */}
-          {canGoNext && (
-            <button
-              onClick={goToNext}
-              className="nav-arrow nav-arrow-right absolute right-0 top-1/2 -translate-y-1/2 translate-x-full px-2 py-6 flex items-center transition-opacity hover:opacity-100 opacity-60 z-10"
-              style={{ color: '#C9A84C' }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </button>
-          )}
-
-          {/* Page indicator */}
-          <div
-            className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10"
+          {/* Left nav arrow */}
+          <button
+            onClick={goToPrev}
+            disabled={!canGoPrev}
+            className="flex-shrink-0 flex items-center justify-center rounded-lg transition-all duration-200"
+            style={{
+              width: '52px',
+              height: '80px',
+              background: canGoPrev ? 'rgba(201,168,76,0.12)' : 'transparent',
+              border: canGoPrev ? '1px solid rgba(201,168,76,0.35)' : '1px solid transparent',
+              color: canGoPrev ? '#C9A84C' : 'transparent',
+              cursor: canGoPrev ? 'pointer' : 'default',
+              boxShadow: canGoPrev ? '0 2px 12px rgba(0,0,0,0.3)' : 'none',
+            }}
           >
-            {herbs.slice(0, Math.min(herbs.length, 12)).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => goToHerb(i)}
-                className="w-1.5 h-1.5 rounded-full transition-all duration-200"
-                style={{
-                  background: currentPage === i + 1 ? '#C9A84C' : 'rgba(201,168,76,0.3)',
-                  transform: currentPage === i + 1 ? 'scale(1.4)' : 'scale(1)',
-                }}
-              />
-            ))}
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+
+          {/* Book */}
+          <div className="flex-1 flex flex-col items-center gap-3">
+            <div
+              className="book relative flex items-stretch animate-fade-in w-full"
+              style={{
+                minHeight: '560px',
+                background: '#F4E4BC',
+                boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.15), 8px 8px 30px rgba(0,0,0,0.5)',
+              }}
+            >
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={currentSpread}
+                  custom={direction}
+                  variants={pageVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="spread-wrapper flex w-full"
+                  style={{ transformStyle: 'preserve-3d' }}
+                >
+                  <BookSpread
+                    currentSpread={currentSpread}
+                    herbs={herbs}
+                    onHerbClick={handleHerbClick}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Spread counter */}
+            {totalSpreads > 0 && (
+              <div className="flex items-center gap-3">
+                <div className="h-px w-12" style={{ background: 'linear-gradient(to right, transparent, rgba(201,168,76,0.3))' }} />
+                <span className="font-cormorant italic text-base" style={{ color: '#C9A84C', opacity: 0.65 }}>
+                  {currentSpread === 0 ? 'Оглавление' : `Разворот ${currentSpread} / ${totalSpreads}`}
+                </span>
+                <div className="h-px w-12" style={{ background: 'linear-gradient(to left, transparent, rgba(201,168,76,0.3))' }} />
+              </div>
+            )}
           </div>
+
+          {/* Right nav arrow */}
+          <button
+            onClick={goToNext}
+            disabled={!canGoNext}
+            className="flex-shrink-0 flex items-center justify-center rounded-lg transition-all duration-200"
+            style={{
+              width: '52px',
+              height: '80px',
+              background: canGoNext ? 'rgba(201,168,76,0.12)' : 'transparent',
+              border: canGoNext ? '1px solid rgba(201,168,76,0.35)' : '1px solid transparent',
+              color: canGoNext ? '#C9A84C' : 'transparent',
+              cursor: canGoNext ? 'pointer' : 'default',
+              boxShadow: canGoNext ? '0 2px 12px rgba(0,0,0,0.3)' : 'none',
+            }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+
         </div>
       </div>
 
@@ -165,6 +184,14 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
           onClose={() => setShowPanel(false)}
           onLogout={() => { onLogout(); setShowPanel(false); }}
           onRefresh={onRefresh}
+        />
+      )}
+
+      {/* Herb detail modal */}
+      {selectedHerb && (
+        <HerbDetailModal
+          herb={selectedHerb}
+          onClose={() => setSelectedHerb(null)}
         />
       )}
     </div>

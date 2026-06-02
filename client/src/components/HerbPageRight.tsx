@@ -2,7 +2,7 @@ import { Herb, RARITY_COLORS } from '../types';
 
 interface Props {
   herb: Herb;
-  pageNumber: number;
+  pageNumber?: number;
 }
 
 export function HerbPageRight({ herb, pageNumber }: Props) {
@@ -13,7 +13,7 @@ export function HerbPageRight({ herb, pageNumber }: Props) {
       {/* Latin name */}
       <div className="text-center mb-4">
         <p
-          className="font-cormorant italic text-xl md:text-2xl"
+          className="font-cormorant italic text-2xl md:text-3xl"
           style={{ color: '#3D2B1F', opacity: 0.85 }}
         >
           {herb.latinName}
@@ -32,7 +32,7 @@ export function HerbPageRight({ herb, pageNumber }: Props) {
       {/* Description */}
       <div className="description mb-5">
         <p
-          className="font-garamond text-sm md:text-base leading-relaxed"
+          className="font-garamond text-base md:text-lg leading-relaxed"
           style={{ color: '#1C1208', textAlign: 'justify' }}
         >
           {herb.description}
@@ -43,7 +43,7 @@ export function HerbPageRight({ herb, pageNumber }: Props) {
       {herb.properties.length > 0 && (
         <div className="properties mb-4">
           <h3
-            className="font-cinzel text-xs tracking-widest uppercase mb-2"
+            className="font-cinzel text-sm tracking-widest uppercase mb-2"
             style={{ color: '#3D2B1F', opacity: 0.7 }}
           >
             ✦ Свойства
@@ -52,7 +52,7 @@ export function HerbPageRight({ herb, pageNumber }: Props) {
             {herb.properties.map(prop => (
               <span
                 key={prop}
-                className="property-tag px-2 py-0.5 font-garamond text-xs"
+                className="property-tag px-2 py-0.5 font-garamond text-sm"
                 style={{
                   color: rarityColor,
                   border: `1px solid ${rarityColor}`,
@@ -69,13 +69,13 @@ export function HerbPageRight({ herb, pageNumber }: Props) {
       {/* Effects */}
       <div className="effects flex-1">
         <h3
-          className="font-cinzel text-xs tracking-widest uppercase mb-2"
+          className="font-cinzel text-sm tracking-widest uppercase mb-2"
           style={{ color: '#3D2B1F', opacity: 0.7 }}
         >
           ✦ Эффекты D&D
         </h3>
         <div
-          className="effects-box p-3 font-garamond text-sm leading-relaxed"
+          className="effects-box p-3 font-garamond text-base leading-relaxed"
           style={{
             background: 'rgba(28,18,8,0.04)',
             border: `1px solid ${rarityColor}40`,
@@ -87,20 +87,22 @@ export function HerbPageRight({ herb, pageNumber }: Props) {
         </div>
       </div>
 
-      {/* Footer with page number */}
-      <div
-        className="page-footer mt-auto pt-4 flex items-center justify-between"
-        style={{ borderTop: `1px solid #C9A84C40` }}
-      >
-        <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, #C9A84C30, transparent)' }} />
-        <span
-          className="font-cormorant italic text-sm px-4"
-          style={{ color: '#3D2B1F', opacity: 0.5 }}
+      {/* Footer */}
+      {pageNumber !== undefined && (
+        <div
+          className="page-footer mt-auto pt-4 flex items-center justify-between"
+          style={{ borderTop: `1px solid #C9A84C40` }}
         >
-          {pageNumber}
-        </span>
-        <div className="flex-1 h-px" style={{ background: 'linear-gradient(to left, #C9A84C30, transparent)' }} />
-      </div>
+          <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, #C9A84C30, transparent)' }} />
+          <span
+            className="font-cormorant italic text-base px-4"
+            style={{ color: '#3D2B1F', opacity: 0.5 }}
+          >
+            {pageNumber}
+          </span>
+          <div className="flex-1 h-px" style={{ background: 'linear-gradient(to left, #C9A84C30, transparent)' }} />
+        </div>
+      )}
     </div>
   );
 }

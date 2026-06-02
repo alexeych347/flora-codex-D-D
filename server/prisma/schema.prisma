@@ -27,5 +27,5 @@ enum Rarity {
   COMMON
   UNCOMMON
   RARE
-  LEGENDARY
+  VERY_RARE
 }

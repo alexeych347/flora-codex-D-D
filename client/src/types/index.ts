@@ -1,4 +1,4 @@
-export type Rarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'LEGENDARY';
+export type Rarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'VERY_RARE';
 
 export interface Herb {
   id: string;
@@ -33,12 +33,12 @@ export const RARITY_LABELS: Record<Rarity, string> = {
   COMMON: 'Обычная',
   UNCOMMON: 'Необычная',
   RARE: 'Редкая',
-  LEGENDARY: 'Легендарная',
+  VERY_RARE: 'Очень редкая',
 };
 
 export const RARITY_COLORS: Record<Rarity, string> = {
   COMMON: '#8A9B8A',
   UNCOMMON: '#4A7C59',
   RARE: '#3A5F8A',
-  LEGENDARY: '#8B4513',
+  VERY_RARE: '#7B3FA0',
 };

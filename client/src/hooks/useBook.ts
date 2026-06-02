@@ -1,35 +1,48 @@
 import { useState } from 'react';
 
+const HERBS_PER_SPREAD = 8;
+
 export function useBook(totalHerbs: number) {
-  // 0 = gallery, 1..N = herbs
-  const [currentPage, setCurrentPage] = useState(0);
+  const totalSpreads = Math.ceil(totalHerbs / HERBS_PER_SPREAD);
+  // 0 = gallery, 1..totalSpreads = herb spreads
+  const [currentSpread, setCurrentSpread] = useState(0);
   const [direction, setDirection] = useState(1);
 
-  const canGoNext = currentPage < totalHerbs;
-  const canGoPrev = currentPage > 0;
+  const canGoNext = currentSpread < totalSpreads;
+  const canGoPrev = currentSpread > 0;
 
   const goToNext = () => {
     if (!canGoNext) return;
     setDirection(1);
-    setCurrentPage(p => p + 1);
+    setCurrentSpread(p => p + 1);
   };
 
   const goToPrev = () => {
     if (!canGoPrev) return;
     setDirection(-1);
-    setCurrentPage(p => p - 1);
+    setCurrentSpread(p => p - 1);
   };
 
-  const goToHerb = (index: number) => {
-    const targetPage = index + 1;
-    setDirection(targetPage > currentPage ? 1 : -1);
-    setCurrentPage(targetPage);
+  const goToSpreadOfHerb = (index: number) => {
+    const targetSpread = Math.floor(index / HERBS_PER_SPREAD) + 1;
+    setDirection(targetSpread > currentSpread ? 1 : -1);
+    setCurrentSpread(targetSpread);
   };
 
   const goToGallery = () => {
     setDirection(-1);
-    setCurrentPage(0);
+    setCurrentSpread(0);
   };
 
-  return { currentPage, direction, canGoNext, canGoPrev, goToNext, goToPrev, goToHerb, goToGallery };
+  return {
+    currentSpread,
+    direction,
+    totalSpreads,
+    canGoNext,
+    canGoPrev,
+    goToNext,
+    goToPrev,
+    goToSpreadOfHerb,
+    goToGallery,
+  };
 }

@@ -3,11 +3,10 @@ import { herbsApi } from '../api/herbs';
 import { Herb } from '../types';
 
 interface Props {
-  onSelectHerb: (index: number) => void;
-  herbs: Array<{ id: string }>;
+  onSelectHerb: (herb: Herb) => void;
 }
 
-export function SearchBar({ onSelectHerb, herbs }: Props) {
+export function SearchBar({ onSelectHerb }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Herb[]>([]);
   const [open, setOpen] = useState(false);
@@ -53,12 +52,9 @@ export function SearchBar({ onSelectHerb, herbs }: Props) {
   }, []);
 
   const handleSelect = (herb: Herb) => {
-    const index = herbs.findIndex(h => h.id === herb.id);
-    if (index !== -1) {
-      onSelectHerb(index);
-      setQuery('');
-      setOpen(false);
-    }
+    onSelectHerb(herb);
+    setQuery('');
+    setOpen(false);
   };
 
   const highlight = (text: string) => {

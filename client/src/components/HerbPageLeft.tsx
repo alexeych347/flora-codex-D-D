@@ -7,7 +7,7 @@ interface Props {
 
 export function HerbPageLeft({ herb, apiUrl }: Props) {
   const rarityColor = RARITY_COLORS[herb.rarity];
-  const isLegendary = herb.rarity === 'LEGENDARY';
+  const isVeryRare = herb.rarity === 'VERY_RARE';
   const imageUrl = herb.imageUrl ? `${apiUrl}${herb.imageUrl}` : null;
 
   return (
@@ -30,8 +30,8 @@ export function HerbPageLeft({ herb, apiUrl }: Props) {
           className="illustration-border w-full h-full flex items-center justify-center"
           style={{
             border: `2px solid ${rarityColor}`,
-            boxShadow: isLegendary
-              ? `0 0 20px rgba(201,168,76,0.4), inset 0 0 20px rgba(201,168,76,0.1)`
+            boxShadow: isVeryRare
+              ? `0 0 24px rgba(123,63,160,0.45), inset 0 0 20px rgba(123,63,160,0.12)`
               : `inset 0 0 15px rgba(0,0,0,0.1)`,
             background: `linear-gradient(135deg, rgba(228,212,163,0.3) 0%, rgba(244,228,188,0.6) 100%)`,
             minHeight: '220px',
@@ -71,7 +71,7 @@ export function HerbPageLeft({ herb, apiUrl }: Props) {
       {/* Name & Rarity */}
       <div className="herb-info text-center mt-4 w-full">
         <h2
-          className="font-cinzel text-xl md:text-2xl leading-tight mb-2"
+          className="font-cinzel text-2xl md:text-3xl leading-tight mb-2"
           style={{ color: '#1C1208' }}
         >
           {herb.name}
@@ -79,12 +79,12 @@ export function HerbPageLeft({ herb, apiUrl }: Props) {
 
         <div className="flex justify-center mb-2">
           <span
-            className="rarity-badge px-3 py-1 text-xs font-garamond font-semibold tracking-widest uppercase"
+            className="rarity-badge px-3 py-1 text-sm font-garamond font-semibold tracking-widest uppercase"
             style={{
               color: rarityColor,
               border: `1px solid ${rarityColor}`,
               backgroundColor: `${rarityColor}18`,
-              boxShadow: isLegendary ? `0 0 12px rgba(201,168,76,0.5)` : 'none',
+              boxShadow: isVeryRare ? `0 0 14px rgba(123,63,160,0.5)` : 'none',
             }}
           >
             {RARITY_LABELS[herb.rarity]}
@@ -93,7 +93,7 @@ export function HerbPageLeft({ herb, apiUrl }: Props) {
 
         {herb.discoveredAt && (
           <p
-            className="font-garamond text-xs italic opacity-70 mt-1"
+            className="font-garamond text-sm italic opacity-70 mt-1"
             style={{ color: '#3D2B1F' }}
           >
             Обнаружена: {herb.discoveredAt}
@@ -140,12 +140,16 @@ function HerbIllustrationPlaceholder({ rarity }: { rarity: string }) {
         <circle cx="50" cy="55" r="5" fill="#6A9FBA" opacity="0.8"/>
       </svg>
     ),
-    LEGENDARY: (
+    VERY_RARE: (
       <svg width="100" height="120" viewBox="0 0 100 120" fill="none">
-        <line x1="50" y1="110" x2="50" y2="10" stroke="#8B4513" strokeWidth="2"/>
-        <path d="M50 10 L55 30 L75 25 L60 40 L70 60 L50 48 L30 60 L40 40 L25 25 L45 30 Z" fill="#C9A84C" opacity="0.8"/>
-        <circle cx="50" cy="48" r="8" fill="#F0C060" opacity="0.9"/>
-        <path d="M25 80 Q50 70 75 80 Q50 95 25 80Z" fill="#8B4513" opacity="0.6"/>
+        <line x1="50" y1="110" x2="50" y2="10" stroke="#4A1A6B" strokeWidth="2"/>
+        <path d="M50 10 L57 32 L80 25 L63 44 L75 68 L50 55 L25 68 L37 44 L20 25 L43 32 Z" fill="#7B3FA0" opacity="0.85"/>
+        <circle cx="50" cy="55" r="10" fill="#C090E0" opacity="0.9"/>
+        <circle cx="22" cy="28" r="2.5" fill="#C9A84C" opacity="0.85"/>
+        <circle cx="78" cy="22" r="2.5" fill="#C9A84C" opacity="0.85"/>
+        <circle cx="12" cy="58" r="2" fill="#C9A84C" opacity="0.65"/>
+        <circle cx="88" cy="52" r="2" fill="#C9A84C" opacity="0.65"/>
+        <circle cx="50" cy="8" r="1.5" fill="#C9A84C" opacity="0.7"/>
       </svg>
     ),
   };
@@ -153,7 +157,7 @@ function HerbIllustrationPlaceholder({ rarity }: { rarity: string }) {
   return (
     <>
       {svgData[rarity] || svgData.COMMON}
-      <p className="font-garamond text-xs italic" style={{ color: '#3D2B1F', opacity: 0.5 }}>
+      <p className="font-garamond text-sm italic" style={{ color: '#3D2B1F', opacity: 0.5 }}>
         Иллюстрация отсутствует
       </p>
     </>
