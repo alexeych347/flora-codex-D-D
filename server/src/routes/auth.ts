@@ -1,11 +1,11 @@
-import { Router, Response } from 'express';
+import { Router, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
 
 // POST /api/auth/login
-router.post('/login', (req, res: Response) => {
+router.post('/login', (req: Request, res: Response) => {
   const { password } = req.body;
 
   if (!password || password !== process.env.DM_PASSWORD) {

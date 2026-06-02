@@ -1,4 +1,4 @@
-import { Router, Response } from 'express';
+import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import path from 'path';
 import fs from 'fs';
@@ -106,7 +106,7 @@ router.get('/:id', optionalAuth, async (req: AuthRequest, res: Response) => {
 });
 
 // POST /api/herbs
-router.post('/', authMiddleware, async (req, res: Response) => {
+router.post('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const { name, latinName, imageUrl, rarity, discoveredAt, description, properties, effects, isUnlocked, sortOrder } = req.body;
 
@@ -132,7 +132,7 @@ router.post('/', authMiddleware, async (req, res: Response) => {
 });
 
 // PUT /api/herbs/:id
-router.put('/:id', authMiddleware, async (req, res: Response) => {
+router.put('/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
     const { name, latinName, imageUrl, rarity, discoveredAt, description, properties, effects, isUnlocked, sortOrder } = req.body;
 
@@ -148,7 +148,7 @@ router.put('/:id', authMiddleware, async (req, res: Response) => {
 });
 
 // PATCH /api/herbs/:id/unlock
-router.patch('/:id/unlock', authMiddleware, async (req, res: Response) => {
+router.patch('/:id/unlock', authMiddleware, async (req: Request, res: Response) => {
   try {
     const herb = await prisma.herb.findUnique({ where: { id: req.params.id } });
 
@@ -169,7 +169,7 @@ router.patch('/:id/unlock', authMiddleware, async (req, res: Response) => {
 });
 
 // DELETE /api/herbs/:id
-router.delete('/:id', authMiddleware, async (req, res: Response) => {
+router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
     await prisma.herb.delete({ where: { id: req.params.id } });
     res.json({ message: 'Трава удалена' });
@@ -179,7 +179,7 @@ router.delete('/:id', authMiddleware, async (req, res: Response) => {
 });
 
 // POST /api/herbs/:id/image
-router.post('/:id/image', authMiddleware, upload.single('image'), async (req, res: Response) => {
+router.post('/:id/image', authMiddleware, upload.single('image'), async (req: Request, res: Response) => {
   try {
     if (!req.file) {
       res.status(400).json({ error: 'Файл не загружен' });
