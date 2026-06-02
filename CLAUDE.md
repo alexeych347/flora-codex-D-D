@@ -67,12 +67,34 @@ isFullHerb(herb)  // type guard для сужения типа
 
 ### Book navigation model
 
-`useBook(totalHerbs)` управляет навигацией:
-- страница `0` = оглавление-галерея (`GalleryIndex`)
-- страницы `1..N` = травы (индекс в массиве = `page - 1`)
-- `direction: 1` (вперёд) / `-1` (назад) управляет `rotateY` анимацией в `Book.tsx`
+`useBook(totalHerbs)` управляет навигацией по разворотам:
+- `currentSpread = 0` → оглавление-галерея (`GalleryIndex`)
+- `currentSpread = 1..N` → развороты с травами (по 8 трав на разворот, 4 на каждой странице)
+- `direction: 1` (вперёд) / `-1` (назад) управляет `rotateY` анимацией
+
+Раскладка разворота (spread S > 0):
+```
+herbsStart = (S - 1) * 8
+Левая страница:  herbs[herbsStart .. herbsStart+3]   (2×2 сетка)
+Правая страница: herbs[herbsStart+4 .. herbsStart+7] (2×2 сетка)
+```
+
+Клик по траве в книге (или в галерее / поиске) открывает `HerbDetailModal` — отдельная страница для каждой травы отсутствует. `HerbPageLeft` и `HerbPageRight` рендерятся только внутри модального окна.
 
 Анимация перелистывания: `AnimatePresence` + `motion.div` с `rotateY: ±90 → 0` через Framer Motion, `perspective: 1500px` на контейнере.
+
+### Rarity enum
+
+Четыре значения в порядке возрастания редкости:
+
+| Значение    | Метка         | Цвет      |
+|-------------|---------------|-----------|
+| `COMMON`    | Обычная       | `#8A9B8A` |
+| `UNCOMMON`  | Необычная     | `#4A7C59` |
+| `RARE`      | Редкая        | `#3A5F8A` |
+| `VERY_RARE` | Очень редкая  | `#7B3FA0` |
+
+При переименовании значений Prisma enum в PostgreSQL нельзя просто удалить старое значение — нужно пересоздавать тип. Паттерн миграции: `ADD VALUE` → `UPDATE` строки → `CREATE TYPE _new` → `ALTER COLUMN ... TYPE _new USING ...` → swap типов. Пример: `migrations/20260602000001_legendary_to_very_rare/migration.sql`.
 
 ### Request flow
 
@@ -119,3 +141,4 @@ Render buildCommand использует `npm install --include=dev` — это 
 - **Изображения** — сохраняются в `server/uploads/`, путь записывается в `imageUrl` как `/uploads/filename.ext`, отдаются как статика через `express.static`
 - **Мобильная адаптивность** — на экранах `< md` правая страница книги скрыта (`hidden md:block`), показывается только левая
 - **Шрифты** — Cinzel Decorative (заголовки), EB Garamond (основной текст), Cormorant Garamond italic (латынь). Подключены в `index.html` через Google Fonts
+- **Модальное окно** — `HerbDetailModal` закрывается по `Escape` и клику за пределами; содержит `HerbPageLeft` + `HerbPageRight` бок о бок
