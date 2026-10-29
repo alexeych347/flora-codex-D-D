@@ -73,38 +73,35 @@ export function LoginScreen({ onLogin, onClose }: Props) {
           </div>
 
           <label className="f-cormorant-sc" style={{ alignSelf: 'flex-start', fontSize: 13, letterSpacing: '.1em', opacity: .8, marginBottom: 9 }}>ПЕРСОНАЖ</label>
-          <div style={{ width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 9, marginBottom: 11 }}>
-            {partyMembers.map(p => {
-              const active = userId === p.id;
-              return (
-                <button type="button" key={p.id}
-                  onClick={() => { setUserId(p.id); setErr(''); }}
-                  className="f-philosopher" style={{
-                    padding: '11px 8px', fontSize: 17, fontWeight: 700,
-                    background: active ? 'var(--gold-muted)' : 'rgba(184,134,11,.07)',
-                    border: `1.5px solid ${active ? 'var(--gold-muted)' : 'rgba(184,134,11,.35)'}`,
-                    color: active ? 'var(--ink)' : 'var(--birch)',
-                    cursor: 'pointer', transition: 'all .15s',
-                  }}>{p.name}</button>
-              );
-            })}
-          </div>
-          {master && (
-            <button type="button" onClick={() => { setUserId(master.id); setErr(''); }}
-              className="f-cormorant-sc" style={{
-                width: '100%', padding: '10px 8px', fontSize: 14, letterSpacing: '.12em',
-                textTransform: 'uppercase', fontWeight: 600, marginBottom: 18,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                background: userId === master.id ? 'rgba(139,26,26,.85)' : 'rgba(139,26,26,.18)',
-                border: `1.5px solid ${userId === master.id ? '#b5403a' : 'rgba(139,26,26,.5)'}`,
-                color: userId === master.id ? '#fbe7d2' : '#d99', cursor: 'pointer', transition: 'all .15s',
-              }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <path d="M3 17l2-9 4 4 3-7 3 7 4-4 2 9z" strokeLinejoin="round" />
-              </svg>
-              {master.name}
-            </button>
-          )}
+          <select
+            value={userId}
+            onChange={e => { setUserId(e.target.value); setErr(''); }}
+            className="f-philosopher"
+            style={{
+              width: '100%', padding: '13px 16px', fontSize: 16, marginBottom: 14,
+              color: userId ? 'var(--birch)' : 'rgba(245,240,232,.4)',
+              background: 'rgba(184,134,11,.07)',
+              border: '1.5px solid rgba(184,134,11,.45)', outline: 'none',
+              cursor: 'pointer', appearance: 'none',
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23B8860B' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 14px center',
+            }}
+          >
+            <option value="" disabled style={{ background: '#120c04' }}>Выберите персонажа…</option>
+            {partyMembers.length > 0 && (
+              <optgroup label="Партия" style={{ background: '#120c04' }}>
+                {partyMembers.map(p => (
+                  <option key={p.id} value={p.id} style={{ background: '#120c04' }}>{p.name}</option>
+                ))}
+              </optgroup>
+            )}
+            {master && (
+              <optgroup label="Мастер" style={{ background: '#120c04' }}>
+                <option value={master.id} style={{ background: '#120c04' }}>{master.name}</option>
+              </optgroup>
+            )}
+          </select>
 
           <input type="password" value={pw}
             onChange={e => setPw(e.target.value)}
