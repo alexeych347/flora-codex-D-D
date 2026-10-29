@@ -19,20 +19,18 @@ interface Props {
 
 const pageVariants = {
   initial: (direction: number) => ({
-    rotateY: direction > 0 ? 90 : -90,
+    x: direction > 0 ? '100%' : '-100%',
     opacity: 0,
-    transformOrigin: direction > 0 ? 'left center' : 'right center',
   }),
   animate: {
-    rotateY: 0,
+    x: 0,
     opacity: 1,
-    transition: { duration: 0.55, ease: [0.4, 0, 0.2, 1] },
+    transition: { duration: 0.45, ease: [0.4, 0, 0.2, 1] },
   },
   exit: (direction: number) => ({
-    rotateY: direction > 0 ? -90 : 90,
+    x: direction > 0 ? '-100%' : '100%',
     opacity: 0,
-    transformOrigin: direction > 0 ? 'right center' : 'left center',
-    transition: { duration: 0.45, ease: [0.4, 0, 0.2, 1] },
+    transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] },
   }),
 };
 
@@ -183,6 +181,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
                 minHeight: isMobile ? '480px' : '680px',
                 background: '#F4E4BC',
                 boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.15), 8px 8px 30px rgba(0,0,0,0.5)',
+                overflow: 'hidden',
               }}
             >
               <AnimatePresence mode="wait" custom={direction}>
@@ -194,7 +193,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
                   animate="animate"
                   exit="exit"
                   className="spread-wrapper flex w-full"
-                  style={{ transformStyle: 'preserve-3d' }}
+                  style={{}}
                   onPanEnd={handlePanEnd}
                 >
                   <BookSpread
