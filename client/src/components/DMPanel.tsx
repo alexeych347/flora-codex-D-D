@@ -16,13 +16,12 @@ interface HerbForm {
   imageUrl?: string | null;
   rarity?: Rarity;
   description?: string;
-  properties?: string[];
   effects?: string;
   access?: string[];
 }
 
 const EMPTY_FORM: HerbForm = {
-  name: '', rarity: 'COMMON', description: '', properties: [], effects: '', access: [],
+  name: '', rarity: 'COMMON', description: '', effects: '', access: [],
 };
 
 // DM (мастер) всегда получает полные данные трав с сервера, включая access[].
@@ -50,7 +49,6 @@ function Toggle({ on, onClick, title }: { on: boolean; onClick: () => void; titl
 export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [form, setForm] = useState<HerbForm | null>(null);
-  const [propertiesInput, setPropertiesInput] = useState('');
   const [saving, setSaving] = useState(false);
   const [togglingKey, setTogglingKey] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -98,17 +96,15 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
 
   const startCreate = () => {
     setForm({ ...EMPTY_FORM });
-    setPropertiesInput('');
     pendingFormBlob.current = null;
   };
   const startEdit = (herb: HerbOrStub) => {
     const h = asDMHerb(herb);
     setForm({
       id: h.id, name: h.name, imageUrl: h.imageUrl, rarity: h.rarity,
-      description: h.description, properties: h.properties, effects: h.effects,
+      description: h.description, effects: h.effects,
       access: h.access || [],
     });
-    setPropertiesInput((h.properties || []).join(', '));
     pendingFormBlob.current = null;
   };
 
@@ -143,7 +139,7 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
         rarity: form.rarity,
         description: form.description,
         effects: form.effects,
-        properties: propertiesInput.split(',').map(p => p.trim()).filter(Boolean),
+        properties: [],
       };
       let saved: Herb;
       if (form.id) {
@@ -309,10 +305,6 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
             <div>
               <label style={labelStyle}>Описание</label>
               <textarea rows={4} style={{ ...inputStyle, resize: 'vertical' }} value={form.description || ''} onChange={e => setForm(f => f && ({ ...f, description: e.target.value }))} />
-            </div>
-            <div>
-              <label style={labelStyle}>Свойства (через запятую)</label>
-              <input style={inputStyle} value={propertiesInput} onChange={e => setPropertiesInput(e.target.value)} placeholder="Лечебная, Ядовитая…" />
             </div>
             <div>
               <label style={labelStyle}>Эффекты</label>
