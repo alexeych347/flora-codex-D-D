@@ -308,7 +308,14 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
             </div>
             <div>
               <label style={labelStyle}>Эффекты</label>
-              <textarea rows={4} style={{ ...inputStyle, resize: 'vertical' }} value={form.effects || ''} onChange={e => setForm(f => f && ({ ...f, effects: e.target.value }))} />
+              <select style={inputStyle} value={form.effects || ''} onChange={e => setForm(f => f && ({ ...f, effects: e.target.value }))}>
+                <option value="">— Не выбрано —</option>
+                <option value="Исцеляющие">Исцеляющие</option>
+                <option value="Усиливающие боевые">Усиливающие боевые</option>
+                <option value="Вызывающие побочные эффекты">Вызывающие побочные эффекты</option>
+                <option value="Создающие магические эффекты">Создающие магические эффекты</option>
+                <option value="Ядовитые">Ядовитые</option>
+              </select>
             </div>
             <div>
               <label style={labelStyle}>Доступ персонажам</label>
