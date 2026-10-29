@@ -1,17 +1,18 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import { Herb, HerbOrStub, isFullHerb } from '../types';
+import { Herb, HerbOrStub, Player, isFullHerb } from '../types';
 import { BookSpread } from './BookSpread';
 import { useBook } from '../hooks/useBook';
 import { SearchBar } from './SearchBar';
 import { DMPanel } from './DMPanel';
-import { DMLogin } from './DMLogin';
+import { LoginScreen } from './LoginScreen';
 import { HerbDetailModal } from './HerbDetailModal';
 
 interface Props {
   herbs: HerbOrStub[];
-  isDM: boolean;
-  onLogin: (password: string) => Promise<void>;
+  player: Player | null;
+  isMaster: boolean;
+  onLogin: (playerId: string, password: string) => Promise<void>;
   onLogout: () => void;
   onRefresh: () => void;
 }
@@ -35,7 +36,7 @@ const pageVariants = {
   }),
 };
 
-export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
+export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: Props) {
   const {
     currentSpread,
     direction,
@@ -81,35 +82,73 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
 
   return (
     <div className="book-app min-h-screen flex flex-col" style={{ background: '#0D0A06' }}>
-      {/* Top bar — high z-index so search dropdown overlaps the book */}
+      {/* Top bar */}
       <div
-        className="top-bar flex items-center justify-between px-3 md:px-8 py-3 flex-shrink-0"
+        className="top-bar flex items-center gap-3 px-3 md:px-6 py-2.5 flex-shrink-0"
         style={{
-          background: 'rgba(28,18,8,0.95)',
-          borderBottom: '1px solid #C9A84C20',
-          backdropFilter: 'blur(8px)',
+          background: 'rgba(9,13,21,.97)',
+          borderBottom: '1px solid rgba(184,134,11,.32)',
+          backdropFilter: 'blur(12px)',
           position: 'relative',
           zIndex: 100,
         }}
       >
-        <span className="font-cinzel text-xs md:text-sm tracking-widest flex-shrink-0" style={{ color: '#C9A84C', opacity: 0.8 }}>
-          ✦ Flora Codex
+        <span className="f-cormorant-sc flex-shrink-0" style={{
+          color: 'var(--gold-muted)', fontSize: 16, letterSpacing: '.2em',
+          whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <svg width="14" height="14" viewBox="0 0 18 18">
+            <path d="M9,1 l2,6 l6,0 l-5,4 l2,6 l-5,-4 l-5,4 l2,-6 l-5,-4 l6,0 Z" fill="#8B1A1A" opacity=".9" />
+          </svg>
+          КОДЕКС ТРАВ
         </span>
 
-        <div className="flex-1 mx-3 md:mx-6">
+        <div className="flex-1">
           <SearchBar onSelectHerb={handleSearchSelect} />
         </div>
 
-        <button
-          onClick={() => isDM ? setShowPanel(p => !p) : setShowLogin(true)}
-          className="dm-key-btn p-2 flex-shrink-0 transition-opacity hover:opacity-80"
-          title={isDM ? 'Панель DM' : 'Войти как DM'}
-          style={{ color: '#C9A84C', opacity: isDM ? 1 : 0.35 }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
+        {player ? (
+          <span style={{ display: 'flex', alignItems: 'center', gap: 7, whiteSpace: 'nowrap' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke={isMaster ? '#d9a93a' : 'var(--gold-muted)'} strokeWidth="1.7">
+              {isMaster
+                ? <path d="M3 17l2-9 4 4 3-7 3 7 4-4 2 9z" strokeLinejoin="round" />
+                : <><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" strokeLinecap="round" /></>}
+            </svg>
+            <span className="f-italic" style={{ color: 'var(--birch)', fontSize: 15, opacity: .9 }}>{player.name}</span>
+          </span>
+        ) : (
+          <button onClick={() => setShowLogin(true)} className="f-cormorant-sc flex-shrink-0" style={{
+            fontSize: 12.5, padding: '6px 13px', letterSpacing: '.1em',
+            textTransform: 'uppercase', fontWeight: 600,
+            background: 'rgba(184,134,11,.1)', border: '1px solid rgba(184,134,11,.4)',
+            color: 'var(--gold-muted)', cursor: 'pointer', whiteSpace: 'nowrap',
+          }}>Войти</button>
+        )}
+
+        {isMaster && (
+          <button onClick={() => setShowPanel(p => !p)} className="f-cormorant-sc flex-shrink-0" style={{
+            fontSize: 12.5, padding: '6px 13px', letterSpacing: '.1em',
+            textTransform: 'uppercase', fontWeight: 600,
+            background: 'rgba(184,134,11,.14)', border: '1px solid rgba(184,134,11,.5)',
+            color: 'var(--gold-muted)', cursor: 'pointer', whiteSpace: 'nowrap',
+          }}>Панель Мастера</button>
+        )}
+
+        {player && (
+          <button onClick={onLogout} title="Выйти" className="flex-shrink-0" style={{
+            background: 'none', border: 'none', color: 'var(--gold-muted)',
+            opacity: 0.6, padding: 4, display: 'grid', placeItems: 'center', transition: 'opacity .2s',
+          }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+            onMouseLeave={e => (e.currentTarget.style.opacity = '0.6')}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Book + navigation row */}
@@ -211,16 +250,16 @@ export function Book({ herbs, isDM, onLogin, onLogout, onRefresh }: Props) {
         </div>
       </div>
 
-      {/* DM Login modal */}
+      {/* Login modal */}
       {showLogin && (
-        <DMLogin
+        <LoginScreen
           onLogin={onLogin}
           onClose={() => setShowLogin(false)}
         />
       )}
 
-      {/* DM Panel */}
-      {isDM && showPanel && (
+      {/* Master panel */}
+      {isMaster && showPanel && (
         <DMPanel
           herbs={herbs}
           onClose={() => setShowPanel(false)}

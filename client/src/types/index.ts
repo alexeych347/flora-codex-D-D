@@ -1,4 +1,11 @@
 export type Rarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'VERY_RARE';
+export type PlayerRole = 'PLAYER' | 'MASTER';
+
+export interface Player {
+  id: string; // slug, используется как логин
+  name: string;
+  role: PlayerRole;
+}
 
 export interface Herb {
   id: string;
@@ -14,6 +21,8 @@ export interface Herb {
   sortOrder: number;
   createdAt?: string;
   updatedAt?: string;
+  /** только в ответах мастеру: slug-и игроков, у которых открыт доступ */
+  access?: string[];
 }
 
 export interface LockedHerbStub {
@@ -28,6 +37,8 @@ export type HerbOrStub = Herb | LockedHerbStub;
 export function isFullHerb(herb: HerbOrStub): herb is Herb {
   return herb.isUnlocked === true;
 }
+
+export const RARITY: Rarity[] = ['COMMON', 'UNCOMMON', 'RARE', 'VERY_RARE'];
 
 export const RARITY_LABELS: Record<Rarity, string> = {
   COMMON: 'Обычная',

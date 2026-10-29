@@ -1,40 +1,49 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
+export interface AuthPlayer {
+  id: string;
+  role: 'PLAYER' | 'MASTER';
+}
+
 export interface AuthRequest extends Request {
-  isDM?: boolean;
+  player?: AuthPlayer | null;
+}
+
+function verifyToken(token: string): AuthPlayer | null {
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as AuthPlayer;
+    return { id: payload.id, role: payload.role };
+  } catch {
+    return null;
+  }
 }
 
 export function authMiddleware(req: AuthRequest, res: Response, next: NextFunction) {
   const token = req.headers.authorization?.split(' ')[1];
+  const player = token ? verifyToken(token) : null;
 
-  if (!token) {
-    res.status(401).json({ error: 'Токен не предоставлен' });
+  if (!player) {
+    res.status(401).json({ error: 'Недействительный токен' });
     return;
   }
 
-  try {
-    jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
-    req.isDM = true;
+  req.player = player;
+  next();
+}
+
+export function requireMaster(req: AuthRequest, res: Response, next: NextFunction) {
+  authMiddleware(req, res, () => {
+    if (req.player?.role !== 'MASTER') {
+      res.status(403).json({ error: 'Доступно только мастеру' });
+      return;
+    }
     next();
-  } catch {
-    res.status(401).json({ error: 'Недействительный токен' });
-  }
+  });
 }
 
 export function optionalAuth(req: AuthRequest, res: Response, next: NextFunction) {
   const token = req.headers.authorization?.split(' ')[1];
-
-  if (token) {
-    try {
-      jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
-      req.isDM = true;
-    } catch {
-      req.isDM = false;
-    }
-  } else {
-    req.isDM = false;
-  }
-
+  req.player = token ? verifyToken(token) : null;
   next();
 }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Herb, HerbOrStub, Rarity } from '../types';
+import { Herb, HerbOrStub, Player, Rarity } from '../types';
 
 export interface HerbPayload {
   name?: string;
@@ -10,7 +10,6 @@ export interface HerbPayload {
   description?: string;
   properties?: string[];
   effects?: string;
-  isUnlocked?: boolean;
   sortOrder?: number;
 }
 
@@ -19,7 +18,7 @@ const API_URL = import.meta.env.VITE_API_URL || '';
 const api = axios.create({ baseURL: `${API_URL}/api` });
 
 api.interceptors.request.use(config => {
-  const token = localStorage.getItem('dm_token');
+  const token = localStorage.getItem('codex_token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -30,9 +29,10 @@ export const herbsApi = {
   search: (q: string): Promise<Herb[]> => api.get('/herbs/search', { params: { q } }).then(r => r.data),
   create: (data: HerbPayload): Promise<Herb> => api.post('/herbs', data).then(r => r.data),
   update: (id: string, data: HerbPayload): Promise<Herb> => api.put(`/herbs/${id}`, data).then(r => r.data),
-  toggleUnlock: (id: string): Promise<Herb> => api.patch(`/herbs/${id}/unlock`).then(r => r.data),
+  setAccess: (id: string, playerId: string, granted: boolean): Promise<{ access: string[] }> =>
+    api.patch(`/herbs/${id}/access`, { playerId, granted }).then(r => r.data),
   delete: (id: string): Promise<void> => api.delete(`/herbs/${id}`).then(r => r.data),
-  uploadImage: (id: string, file: File): Promise<Herb> => {
+  uploadImage: (id: string, file: File | Blob): Promise<Herb> => {
     const formData = new FormData();
     formData.append('image', file);
     return api.post(`/herbs/${id}/image`, formData, {
@@ -42,8 +42,9 @@ export const herbsApi = {
 };
 
 export const authApi = {
-  login: (password: string): Promise<{ token: string }> =>
-    api.post('/auth/login', { password }).then(r => r.data),
-  verify: (): Promise<{ valid: boolean }> =>
+  getPlayers: (): Promise<Player[]> => api.get('/auth/players').then(r => r.data),
+  login: (playerId: string, password: string): Promise<{ token: string; player: Player }> =>
+    api.post('/auth/login', { playerId, password }).then(r => r.data),
+  verify: (): Promise<{ player: Player }> =>
     api.get('/auth/verify').then(r => r.data),
 };

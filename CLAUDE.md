@@ -50,26 +50,30 @@ cd client && node_modules/.bin/tsc --noEmit
 
 Центральная бизнес-логика: **всё на бэкенде**, клиент не фильтрует.
 
-- `GET /api/herbs` с валидным JWT → все поля всех трав
-- `GET /api/herbs` без токена → locked-травы отдаются как `{ id, isUnlocked: false, sortOrder, rarity }` (4 поля)
-- Middleware `optionalAuth` заполняет `req.isDM = true/false`; `authMiddleware` — требует токен, иначе 401
+Доступ к травам — **персональный**: 4 именованных игрока (Велимир, Мидсоммар, Лейв, Белогор) + мастер, каждый со своим логином (`Player.slug`) и паролем. Открытие травы конкретному игроку — отдельная строка `HerbAccess(herbId, playerId)`; присутствие строки = доступ открыт. Мастер видит всё всегда, без записей в `HerbAccess`.
 
-Соответствующий discriminated union на клиенте:
+- `GET /api/herbs` с JWT мастера → все поля всех трав + `access: string[]` (slug-и игроков с доступом)
+- `GET /api/herbs` с JWT игрока → полные поля для трав с его `HerbAccess`, остальные — заглушка
+- `GET /api/herbs` без токена → **все** травы как заглушки (анонимный посетитель не имеет персонального доступа, но видит книгу с закрытыми травами)
+- Заглушка: `{ id, isUnlocked: false, sortOrder, rarity }` (4 поля)
+- `middleware/auth.ts`: `optionalAuth` заполняет `req.player = { id, role } | null`; `authMiddleware` — требует валидный токен, иначе 401; `requireMaster` — дополнительно проверяет `role === 'MASTER'` (403 иначе)
+
+Соответствующий discriminated union на клиенте (не изменился — контракт `isUnlocked: true/false` тот же, просто его теперь вычисляет сервер per-request с учётом личности игрока):
 ```ts
 // types/index.ts
 type HerbOrStub = Herb | LockedHerbStub
-// Herb.isUnlocked === true (все поля)
+// Herb.isUnlocked === true (все поля, плюс access?: string[] только в ответах мастеру)
 // LockedHerbStub.isUnlocked === false (4 поля)
 isFullHerb(herb)  // type guard для сужения типа
 ```
 
-Важно: `Herb.isUnlocked` имеет тип `true` (не `boolean`). Для форм редактирования используется `HerbPayload` (`api/herbs.ts`) — там `isUnlocked?: boolean`.
+`HerbPayload` (`api/herbs.ts`) не содержит `isUnlocked` — доступ меняется отдельным вызовом `herbsApi.setAccess(herbId, playerId, granted)` → `PATCH /api/herbs/:id/access` (только мастер).
 
 ### Book navigation model
 
 `useBook(totalHerbs)` управляет навигацией по разворотам:
-- `currentSpread = 0` → оглавление-галерея (`GalleryIndex`)
-- `currentSpread = 1..N` → развороты с травами (по 8 трав на разворот, 4 на каждой странице)
+- `currentSpread = 0` → обложка (`CoverLeftPage`/`CoverRightPage` в `components/ui.tsx`). `GalleryIndex.tsx` существует в коде, но никуда не импортируется — мёртвый код, не используется.
+- `currentSpread = 1..N` → развороты с травами (по 8 трав на разворот, 4 на каждой странице, `HerbGridPage` в `components/ui.tsx`)
 - `direction: 1` (вперёд) / `-1` (назад) управляет `rotateY` анимацией
 
 Раскладка разворота (spread S > 0):
@@ -79,9 +83,13 @@ herbsStart = (S - 1) * 8
 Правая страница: herbs[herbsStart+4 .. herbsStart+7] (2×2 сетка)
 ```
 
-Клик по траве в книге (или в галерее / поиске) открывает `HerbDetailModal` — отдельная страница для каждой травы отсутствует. `HerbPageLeft` и `HerbPageRight` рендерятся только внутри модального окна.
+Клик по траве в книге (или в поиске) открывает `HerbDetailModal` (`components/HerbDetailModal.tsx`) — отдельная страница для каждой травы отсутствует.
 
 Анимация перелистывания: `AnimatePresence` + `motion.div` с `rotateY: ±90 → 0` через Framer Motion, `perspective: 1500px` на контейнере.
+
+### Билибинский орнаментальный стиль
+
+`components/ornaments.tsx` — библиотека SVG-орнаментов (углы, лозы, медальоны, гербовые щиты, навигационные щиты-кнопки), портированная из дизайн-проекта Claude Design ("DND травушки", `claude.ai/design/p/019e2848...`). `components/ui.tsx` собирает из них карточки трав/обложку, `components/panels.tsx` + `LoginScreen.tsx` + `PhotoCropModal.tsx` — модалки и панель мастера. CSS-токены (`--gold-muted`, `--birch`, `--slate`, `--r-*`) и шрифтовые классы (`f-philosopher`, `f-cormorant-sc`, `f-italic`, `f-body`, `f-prose`) определены в `index.css`, шрифты Philosopher/Cormorant SC/Istok Web подключены в `index.html`.
 
 ### Rarity enum
 
@@ -104,18 +112,18 @@ Client (Vite :5173)
   → /uploads/* proxy → Server       [статика из server/uploads/]
 
 Server routes:
-  /api/herbs    → src/routes/herbs.ts   (CRUD + /search + /:id/image)
-  /api/auth     → src/routes/auth.ts    (POST /login, GET /verify)
+  /api/herbs    → src/routes/herbs.ts   (CRUD + /search + /:id/image + /:id/access)
+  /api/auth     → src/routes/auth.ts    (GET /players, POST /login, GET /verify)
 ```
 
-JWT хранится в `localStorage` как `dm_token`. Axios-interceptor в `api/herbs.ts` подставляет его в `Authorization: Bearer`.
+JWT хранится в `localStorage` как `codex_token`, payload — `{ id: Player.id, role }`. Axios-interceptor в `api/herbs.ts` подставляет его в `Authorization: Bearer`.
 
 ### Env variables
 
 `server/.env` (скопировать из `.env.example`):
 - `DATABASE_URL` — PostgreSQL connection string
 - `JWT_SECRET` — подписывает токены
-- `DM_PASSWORD` — единственный пароль DM (один на всё)
+- `PLAYER_VELIMIR_PASSWORD`, `PLAYER_MIDSOMMAR_PASSWORD`, `PLAYER_LEIV_PASSWORD`, `PLAYER_BELOGOR_PASSWORD`, `MASTER_PASSWORD` — пароли пяти аккаунтов (хэшируются bcrypt при апсерте в `prisma/players.ts`, читаются `seed.ts` и `migrate-access.ts`)
 - `UPLOAD_DIR` — путь к папке с загруженными фото (default: `./uploads`)
 - `CLIENT_URL` — для CORS origin
 
@@ -134,11 +142,13 @@ cd server && npx prisma migrate dev --name <описание_изменения>
 
 Render buildCommand использует `npm install --include=dev` — это принципиально: `typescript`, `prisma` CLI и все `@types/*` находятся в `devDependencies`, без флага они не установятся в production-окружении и сборка упадёт.
 
+При расширении модели игроков/доступа (`Player`, `HerbAccess`) использован паттерн "expand and contract": миграция `20260624120000_player_access_model` только добавляет таблицы, не трогая старую колонку `Herb.isUnlocked` (её больше нет в `schema.prisma`, но физически в БД она остаётся до отдельной миграции, которая её дропнет). Это нужно, потому что Render гоняет `prisma migrate deploy` на каждом деплое автоматически, а перенос данных (`npm run migrate:access`, одноразовый прод-скрипт в `prisma/migrate-access.ts`) — ручная операция. Дропать `isUnlocked` можно только после того, как `migrate:access` отработал на проде.
+
 ### Key design decisions
 
 - **Нет тестов** — проверка через TypeScript и ручной запуск
 - **Один PrismaClient на роутер** — экземпляр создаётся в `routes/herbs.ts`, не синглтон
-- **Изображения** — сохраняются в `server/uploads/`, путь записывается в `imageUrl` как `/uploads/filename.ext`, отдаются как статика через `express.static`
+- **Изображения** — сохраняются в `server/uploads/`, путь записывается в `imageUrl` как `/uploads/filename.ext`, отдаются как статика через `express.static`. Перед загрузкой DM-панель кадрирует фото на canvas (`PhotoCropModal.tsx`) и отправляет уже обрезанный JPEG-блоб — серверный эндпоинт `/:id/image` не изменился (тот же multipart-аплоад)
 - **Мобильная адаптивность** — на экранах `< md` правая страница книги скрыта (`hidden md:block`), показывается только левая
-- **Шрифты** — Cinzel Decorative (заголовки), EB Garamond (основной текст), Cormorant Garamond italic (латынь). Подключены в `index.html` через Google Fonts
-- **Модальное окно** — `HerbDetailModal` закрывается по `Escape` и клику за пределами; содержит `HerbPageLeft` + `HerbPageRight` бок о бок
+- **Шрифты** — Cinzel Decorative/Philosopher (заголовки), EB Garamond/Istok Web (основной текст), Cormorant Garamond italic/Cormorant SC (латынь, орнаментальные надписи). Подключены в `index.html` через Google Fonts
+- **Модальное окно** — `HerbDetailModal` закрывается по `Escape` и клику за пределами; иллюстрация слева, переплёт (`ModalSpine`), описание/эффекты справа в одну колонку (блока "свойства" в модалке нет — поле `properties` остаётся в БД и форме DM-панели, но не выводится в просмотре травы)

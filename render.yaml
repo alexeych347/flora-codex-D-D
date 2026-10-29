@@ -12,7 +12,15 @@ services:
           property: connectionString
       - key: JWT_SECRET
         generateValue: true
-      - key: DM_PASSWORD
+      - key: PLAYER_VELIMIR_PASSWORD
+        value: change-me-in-render-dashboard
+      - key: PLAYER_MIDSOMMAR_PASSWORD
+        value: change-me-in-render-dashboard
+      - key: PLAYER_LEIV_PASSWORD
+        value: change-me-in-render-dashboard
+      - key: PLAYER_BELOGOR_PASSWORD
+        value: change-me-in-render-dashboard
+      - key: MASTER_PASSWORD
         value: change-me-in-render-dashboard
       - key: NODE_ENV
         value: production

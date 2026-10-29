@@ -15,6 +15,17 @@
   --uncommon: #4A7C59;
   --rare: #3A5F8A;
   --legendary: #8B4513;
+
+  /* Билибинский дизайн (ornaments/ui/panels) */
+  --ink-soft: #3D2B1F;
+  --gold-muted: #B8860B;
+  --birch: #F5F0E8;
+  --slate: #5B6B7A;
+  --cobalt: #3A5F8A;
+  --r-common: #8A9B8A;
+  --r-uncommon: #4A7C59;
+  --r-rare: #3A5F8A;
+  --r-veryrare: #7B3FA0;
 }
 
 * {
@@ -97,3 +108,47 @@ body {
 }
 
 /* Mobile page visibility is handled via JS (isMobile + mobileSide props in BookSpread) */
+
+/* Шрифтовые классы дизайна Билибина */
+.f-cormorant-sc { font-family: 'Cormorant SC', serif; }
+.f-philosopher { font-family: 'Philosopher', serif; }
+.f-italic { font-family: 'Cormorant Garamond', serif; font-style: italic; }
+.f-body { font-family: 'Istok Web', sans-serif; }
+.f-prose { font-family: 'EB Garamond', serif; }
+
+.drop-cap::first-letter {
+  font-family: 'Philosopher', serif;
+  font-size: 2.6em;
+  float: left;
+  line-height: 0.78;
+  padding: 0.04em 0.08em 0 0;
+  color: var(--gold-muted);
+}
+
+/* Анимации дизайна Билибина */
+@keyframes spreadEnter {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+.spread-enter { animation: spreadEnter 0.35s ease-out; }
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.overlay-in { animation: overlayIn 0.2s ease-out; }
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.94) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal-pop { animation: modalPop 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+
+@keyframes panelIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.panel-in { animation: panelIn 0.25s ease-out; }
+
+.hover-lift { transition: transform 0.18s ease, filter 0.18s ease; }
+.hover-lift:hover { transform: translateY(-3px); filter: brightness(1.04); }

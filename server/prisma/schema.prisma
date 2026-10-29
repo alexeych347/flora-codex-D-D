@@ -8,19 +8,39 @@ datasource db {
 }
 
 model Herb {
-  id           String   @id @default(cuid())
+  id           String        @id @default(cuid())
   name         String
   latinName    String
   imageUrl     String?
-  rarity       Rarity   @default(COMMON)
+  rarity       Rarity        @default(COMMON)
   discoveredAt String?
   description  String
   properties   String[]
   effects      String
-  isUnlocked   Boolean  @default(false)
-  sortOrder    Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  sortOrder    Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  access       HerbAccess[]
+}
+
+model Player {
+  id           String       @id @default(cuid())
+  slug         String       @unique
+  name         String
+  passwordHash String
+  role         PlayerRole   @default(PLAYER)
+  createdAt    DateTime     @default(now())
+  access       HerbAccess[]
+}
+
+model HerbAccess {
+  id       String @id @default(cuid())
+  herbId   String
+  playerId String
+  herb     Herb   @relation(fields: [herbId], references: [id], onDelete: Cascade)
+  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([herbId, playerId])
 }
 
 enum Rarity {
@@ -28,4 +48,9 @@ enum Rarity {
   UNCOMMON
   RARE
   VERY_RARE
+}
+
+enum PlayerRole {
+  PLAYER
+  MASTER
 }

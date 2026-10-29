@@ -4,7 +4,7 @@ import { useAuth } from './hooks/useAuth';
 
 export default function App() {
   const { herbs, loading, error, refetch } = useHerbs();
-  const { isDM, loading: authLoading, login, logout } = useAuth();
+  const { player, isMaster, loading: authLoading, login, logout } = useAuth();
 
   if (authLoading || loading) {
     return (
@@ -51,7 +51,8 @@ export default function App() {
   return (
     <Book
       herbs={herbs}
-      isDM={isDM}
+      player={player}
+      isMaster={isMaster}
       onLogin={login}
       onLogout={logout}
       onRefresh={refetch}

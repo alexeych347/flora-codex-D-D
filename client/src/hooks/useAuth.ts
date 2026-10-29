@@ -1,35 +1,38 @@
 import { useState, useEffect } from 'react';
 import { authApi } from '../api/herbs';
+import { Player } from '../types';
 
 export function useAuth() {
-  const [isDM, setIsDM] = useState(false);
+  const [player, setPlayer] = useState<Player | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('dm_token');
+    const token = localStorage.getItem('codex_token');
     if (!token) {
       setLoading(false);
       return;
     }
     authApi.verify()
-      .then(() => setIsDM(true))
+      .then(({ player }) => setPlayer(player))
       .catch(() => {
-        localStorage.removeItem('dm_token');
-        setIsDM(false);
+        localStorage.removeItem('codex_token');
+        setPlayer(null);
       })
       .finally(() => setLoading(false));
   }, []);
 
-  const login = async (password: string) => {
-    const { token } = await authApi.login(password);
-    localStorage.setItem('dm_token', token);
-    setIsDM(true);
+  const login = async (playerId: string, password: string) => {
+    const { token, player } = await authApi.login(playerId, password);
+    localStorage.setItem('codex_token', token);
+    setPlayer(player);
   };
 
   const logout = () => {
-    localStorage.removeItem('dm_token');
-    setIsDM(false);
+    localStorage.removeItem('codex_token');
+    setPlayer(null);
   };
 
-  return { isDM, loading, login, logout };
+  const isMaster = player?.role === 'MASTER';
+
+  return { player, isMaster, loading, login, logout };
 }
