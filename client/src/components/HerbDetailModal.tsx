@@ -76,13 +76,17 @@ export function HerbDetailModal({ herb, onClose }: Props) {
 
         <div style={{ flex: 1, minWidth: 0, padding: '52px 40px 48px 16px', overflowY: 'auto', position: 'relative', zIndex: 10 }}>
           <SectionHeading title="ОПИСАНИЕ" color={color} />
-          <p className="f-prose drop-cap" style={{ color: 'var(--ink)', fontSize: 18.5, lineHeight: 1.72, textAlign: 'justify', marginBottom: 30 }}>
-            {herb.description || 'Описание отсутствует.'}
-          </p>
+          <div style={{ color: 'var(--ink)', fontSize: 18.5, lineHeight: 1.72, textAlign: 'justify', marginBottom: 30, overflowWrap: 'break-word', hyphens: 'auto' }} lang="ru">
+            {(herb.description || 'Описание отсутствует.').split('\n').map((line, i) => (
+              <p key={i} className={i === 0 ? 'f-prose drop-cap' : 'f-prose'} style={{ marginBottom: line ? 10 : 0 }}>
+                {line || ' '}
+              </p>
+            ))}
+          </div>
 
           <SectionHeading title="ЭФФЕКТЫ" color={color} />
-          <div style={{ padding: '17px 20px', background: 'var(--parchment-dark)', boxShadow: `inset 0 0 0 1px ${color}55`, borderLeft: `3.5px solid ${color}` }}>
-            <span className="f-prose" style={{ color: 'var(--ink)', fontSize: 17.5, lineHeight: 1.72, display: 'block' }}>
+          <div style={{ padding: '17px 20px', background: 'var(--parchment-dark)', boxShadow: `inset 0 0 0 1px ${color}33`, borderLeft: `3.5px solid ${color}66` }}>
+            <span className="f-prose" style={{ color: 'var(--ink)', fontSize: 17.5, fontWeight: 700, lineHeight: 1.72, display: 'block', overflowWrap: 'break-word', hyphens: 'auto' }} lang="ru">
               {herb.effects || 'Эффекты не описаны.'}
             </span>
           </div>

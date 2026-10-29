@@ -32,7 +32,7 @@ export function CloseMedallion({ onClick }: { onClick: () => void }) {
 export function SectionHeading({ title, color }: { title: string; color: string }) {
   return (
     <div style={{ marginBottom: 13 }}>
-      <h3 className="f-cormorant-sc" style={{ color: 'var(--ink)', fontSize: 17, letterSpacing: '.16em', textTransform: 'uppercase' }}>{title}</h3>
+      <h3 className="f-cormorant-sc" style={{ color: 'var(--ink)', fontSize: 17, fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase' }}>{title}</h3>
       <div style={{ color, marginTop: 6, opacity: .85, display: 'flex' }}>
         <HairDivider width={150} color={color} />
       </div>
