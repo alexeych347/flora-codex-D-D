@@ -34,6 +34,32 @@ const pageVariants = {
   }),
 };
 
+function NavArrow({ dir, enabled, onClick, isMobile }: {
+  dir: 'prev' | 'next'; enabled: boolean; onClick: () => void; isMobile: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={!enabled}
+      className="flex-shrink-0 flex items-center justify-center rounded-lg transition-all duration-200"
+      style={{
+        width: isMobile ? '44px' : '52px',
+        height: isMobile ? '44px' : '80px',
+        background: enabled ? 'rgba(201,168,76,0.12)' : 'transparent',
+        border: enabled ? '1px solid rgba(201,168,76,0.35)' : '1px solid transparent',
+        color: enabled ? '#C9A84C' : 'transparent',
+        cursor: enabled ? 'pointer' : 'default',
+        boxShadow: enabled ? '0 2px 12px rgba(0,0,0,0.3)' : 'none',
+      }}
+    >
+      <svg width={isMobile ? 22 : 28} height={isMobile ? 22 : 28} viewBox="0 0 24 24" fill="none">
+        <path d={dir === 'prev' ? 'M15 18l-6-6 6-6' : 'M9 18l6-6-6-6'}
+          stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    </button>
+  );
+}
+
 export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: Props) {
   const {
     currentSpread,
@@ -153,25 +179,8 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
       <div className="flex-1 flex items-center justify-center p-2 md:p-4">
         <div className="flex items-center gap-2 md:gap-4 w-full" style={{ maxWidth: '1440px' }}>
 
-          {/* Left nav arrow */}
-          <button
-            onClick={goToPrev}
-            disabled={!canGoPrev}
-            className="flex-shrink-0 flex items-center justify-center rounded-lg transition-all duration-200"
-            style={{
-              width: isMobile ? '40px' : '52px',
-              height: isMobile ? '60px' : '80px',
-              background: canGoPrev ? 'rgba(201,168,76,0.12)' : 'transparent',
-              border: canGoPrev ? '1px solid rgba(201,168,76,0.35)' : '1px solid transparent',
-              color: canGoPrev ? '#C9A84C' : 'transparent',
-              cursor: canGoPrev ? 'pointer' : 'default',
-              boxShadow: canGoPrev ? '0 2px 12px rgba(0,0,0,0.3)' : 'none',
-            }}
-          >
-            <svg width={isMobile ? 22 : 28} height={isMobile ? 22 : 28} viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
+          {/* Left nav arrow — на мобильном переезжает под книгу, в строку со счётчиком */}
+          {!isMobile && <NavArrow dir="prev" enabled={canGoPrev} onClick={goToPrev} isMobile={isMobile} />}
 
           {/* Book */}
           <div className="flex-1 flex flex-col items-center gap-2 md:gap-3" style={{ minWidth: isMobile ? 0 : undefined }}>
@@ -208,13 +217,15 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
             </div>
 
             {/* Spread counter */}
-            {totalSpreads > 0 && (
+            {(totalSpreads > 0 || isMobile) && (
               <div className="flex items-center gap-3">
+                {isMobile && <NavArrow dir="prev" enabled={canGoPrev} onClick={goToPrev} isMobile={isMobile} />}
                 <div className="h-px w-8 md:w-12" style={{ background: 'linear-gradient(to right, transparent, rgba(201,168,76,0.3))' }} />
                 <span className="font-cormorant italic text-sm md:text-base" style={{ color: '#C9A84C', opacity: 0.65 }}>
                   {spreadLabel}
                 </span>
                 <div className="h-px w-8 md:w-12" style={{ background: 'linear-gradient(to left, transparent, rgba(201,168,76,0.3))' }} />
+                {isMobile && <NavArrow dir="next" enabled={canGoNext} onClick={goToNext} isMobile={isMobile} />}
               </div>
             )}
 
@@ -226,25 +237,8 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
             )}
           </div>
 
-          {/* Right nav arrow */}
-          <button
-            onClick={goToNext}
-            disabled={!canGoNext}
-            className="flex-shrink-0 flex items-center justify-center rounded-lg transition-all duration-200"
-            style={{
-              width: isMobile ? '40px' : '52px',
-              height: isMobile ? '60px' : '80px',
-              background: canGoNext ? 'rgba(201,168,76,0.12)' : 'transparent',
-              border: canGoNext ? '1px solid rgba(201,168,76,0.35)' : '1px solid transparent',
-              color: canGoNext ? '#C9A84C' : 'transparent',
-              cursor: canGoNext ? 'pointer' : 'default',
-              boxShadow: canGoNext ? '0 2px 12px rgba(0,0,0,0.3)' : 'none',
-            }}
-          >
-            <svg width={isMobile ? 22 : 28} height={isMobile ? 22 : 28} viewBox="0 0 24 24" fill="none">
-              <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
+          {/* Right nav arrow — на мобильном переезжает под книгу */}
+          {!isMobile && <NavArrow dir="next" enabled={canGoNext} onClick={goToNext} isMobile={isMobile} />}
 
         </div>
       </div>
