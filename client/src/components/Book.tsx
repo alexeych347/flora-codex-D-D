@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { Herb, HerbOrStub, Player, isFullHerb } from '../types';
 import { BookSpread } from './BookSpread';
+import { NavArrow } from './ui';
 import { useBook } from '../hooks/useBook';
 import { SearchBar } from './SearchBar';
 import { DMPanel } from './DMPanel';
@@ -33,33 +34,6 @@ const pageVariants = {
     transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] },
   }),
 };
-
-function NavArrow({ dir, enabled, onClick, isMobile }: {
-  dir: 'prev' | 'next'; enabled: boolean; onClick: () => void; isMobile: boolean;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={!enabled}
-      aria-label={dir === 'prev' ? 'Предыдущая страница' : 'Следующая страница'}
-      className="flex-shrink-0 flex items-center justify-center rounded-lg transition-all duration-200"
-      style={{
-        width: isMobile ? '44px' : '52px',
-        height: isMobile ? '44px' : '80px',
-        background: enabled ? 'rgba(201,168,76,0.12)' : 'transparent',
-        border: enabled ? '1px solid rgba(201,168,76,0.35)' : '1px solid transparent',
-        color: enabled ? '#C9A84C' : 'transparent',
-        cursor: enabled ? 'pointer' : 'default',
-        boxShadow: enabled ? '0 2px 12px rgba(0,0,0,0.3)' : 'none',
-      }}
-    >
-      <svg width={isMobile ? 22 : 28} height={isMobile ? 22 : 28} viewBox="0 0 24 24" fill="none">
-        <path d={dir === 'prev' ? 'M15 18l-6-6 6-6' : 'M9 18l6-6-6-6'}
-          stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    </button>
-  );
-}
 
 export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: Props) {
   const {
