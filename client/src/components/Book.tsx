@@ -150,7 +150,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
       </div>
 
       {/* Book + navigation row */}
-      <div className="flex-1 flex items-center justify-center p-2 md:p-4" style={{ perspective: '1500px' }}>
+      <div className="flex-1 flex items-center justify-center p-2 md:p-4">
         <div className="flex items-center gap-2 md:gap-4 w-full" style={{ maxWidth: '1440px' }}>
 
           {/* Left nav arrow */}

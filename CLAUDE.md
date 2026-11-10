@@ -74,7 +74,7 @@ isFullHerb(herb)  // type guard для сужения типа
 `useBook(totalHerbs)` управляет навигацией по разворотам:
 - `currentSpread = 0` → обложка (`CoverLeftPage`/`CoverRightPage` в `components/ui.tsx`). `GalleryIndex.tsx` существует в коде, но никуда не импортируется — мёртвый код, не используется.
 - `currentSpread = 1..N` → развороты с травами (по 8 трав на разворот, 4 на каждой странице, `HerbGridPage` в `components/ui.tsx`)
-- `direction: 1` (вперёд) / `-1` (назад) управляет `rotateY` анимацией
+- `direction: 1` (вперёд) / `-1` (назад) задаёт сторону слайда (`custom={direction}`)
 
 Раскладка разворота (spread S > 0):
 ```
@@ -85,7 +85,7 @@ herbsStart = (S - 1) * 8
 
 Клик по траве в книге (или в поиске) открывает `HerbDetailModal` (`components/HerbDetailModal.tsx`) — отдельная страница для каждой травы отсутствует.
 
-Анимация перелистывания: `AnimatePresence` + `motion.div` с `rotateY: ±90 → 0` через Framer Motion, `perspective: 1500px` на контейнере.
+Анимация перелистывания: `AnimatePresence mode="wait"` + `motion.div` с вариантами `pageVariants` (`Book.tsx`) — горизонтальный слайд `x: ±100% → 0` и `opacity: 0 → 1` через Framer Motion. Вход 0.45s, выход 0.35s, обе с `ease: [0.4, 0, 0.2, 1]`. 3D-трансформаций нет — `perspective` на контейнере не нужен и удалён.
 
 ### Билибинский орнаментальный стиль
 
