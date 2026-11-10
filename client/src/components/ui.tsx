@@ -121,24 +121,32 @@ export function HerbCard({ herb, onClick, isMobile = false }:
           '0 2px 8px rgba(60,40,15,.14)',
         ].join(','),
       }}>
-        <div style={{
-          flex: 1, minHeight: 0,
-          margin: '8px 8px 0',
-          position: 'relative', overflow: 'hidden',
-          background: herb.imageUrl ? '#000' : `linear-gradient(160deg,${color}14 0%,${color}05 100%)`,
-          boxShadow: `inset 0 0 0 1px ${color}99`,
-        }}>
-          {herb.imageUrl
-            ? <img src={herb.imageUrl} alt={herb.name}
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-            : <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <PlantGlyph rarity={herb.rarity} size={94} />
-              </div>}
+        {/* Плита 1:1. Высоту задаёт flex, ширину выводит aspect-ratio, по бокам
+            остаются поля пергамента — иллюстрация показывается целиком, без среза. */}
+        <div style={{ flex: 1, minHeight: 0, margin: '8px 8px 0', position: 'relative' }}>
+          <div style={{
+            position: 'absolute', top: 0, bottom: 0,
+            left: '50%', transform: 'translateX(-50%)',
+            width: 'auto', aspectRatio: '1', maxWidth: '100%',
+            overflow: 'hidden',
+            background: herb.imageUrl ? '#000' : `linear-gradient(160deg,${color}14 0%,${color}05 100%)`,
+            boxShadow: `inset 0 0 0 1px ${color}99`,
+          }}>
+            {herb.imageUrl
+              ? <img src={herb.imageUrl} alt={herb.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              : <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <PlantGlyph rarity={herb.rarity} size={isMobile ? 62 : 94} />
+                </div>}
+          </div>
         </div>
 
-        <div style={{ margin: '5px 12px 3px', color, display: 'flex', justifyContent: 'center' }}>
-          <HairDivider width="100%" color={color} />
-        </div>
+        {/* На мобильном делителя нет: высота отдана картинке */}
+        {!isMobile && (
+          <div style={{ margin: '5px 12px 3px', color, display: 'flex', justifyContent: 'center' }}>
+            <HairDivider width="100%" color={color} />
+          </div>
+        )}
 
         <div style={{ flexShrink: 0, padding: isMobile ? '1px 8px 9px' : '1px 11px 9px' }}>
           <p className="f-philosopher" style={{
@@ -148,8 +156,18 @@ export function HerbCard({ herb, onClick, isMobile = false }:
             display: '-webkit-box', WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical', overflow: 'hidden',
           }}>{herb.name}</p>
-          <span style={{ display: 'block', whiteSpace: isMobile ? 'nowrap' : undefined }}>
-            <HeraldicBadge color={color} label={RARITY_LABELS[herb.rarity]} size={15} />
+          {/* На мобильном редкость показывает только щит; подпись уходит,
+              имя редкости остаётся для скринридера. Расшифровка цветов — в легенде страницы. */}
+          <span
+            style={{ display: 'block', whiteSpace: isMobile ? 'nowrap' : undefined }}
+            {...(isMobile ? { role: 'img', 'aria-label': `Редкость: ${RARITY_LABELS[herb.rarity]}` } : {})}
+          >
+            <HeraldicBadge
+              color={color}
+              label={RARITY_LABELS[herb.rarity]}
+              size={isMobile ? 19 : 15}
+              withLabel={!isMobile}
+            />
           </span>
         </div>
       </div>
