@@ -63,7 +63,7 @@ export function SearchBar({ onSelectHerb }: Props) {
     const parts = text.split(regex);
     return parts.map((part, i) =>
       regex.test(part) ? (
-        <mark key={i} style={{ background: '#C9A84C50', color: '#1C1208' }}>
+        <mark key={i} style={{ background: 'rgba(184,134,11,.3)', color: 'var(--ink)' }}>
           {part}
         </mark>
       ) : (
@@ -78,7 +78,7 @@ export function SearchBar({ onSelectHerb }: Props) {
         <svg
           width="16" height="16" viewBox="0 0 24 24" fill="none"
           className="absolute left-3 pointer-events-none"
-          style={{ color: '#C9A84C', opacity: 0.7 }}
+          style={{ color: 'var(--gold-muted)', opacity: 0.8 }}
         >
           <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2"/>
           <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" strokeWidth="2"/>
@@ -88,11 +88,11 @@ export function SearchBar({ onSelectHerb }: Props) {
           value={query}
           onChange={e => setQuery(e.target.value)}
           placeholder="Найти траву..."
-          className="search-input w-full pl-9 pr-4 py-2 font-garamond text-sm focus:outline-none"
+          className="search-input w-full pl-9 pr-4 py-2 f-prose text-sm focus:outline-none"
           style={{
             background: 'rgba(244,228,188,0.9)',
-            border: '1px solid #C9A84C60',
-            color: '#1C1208',
+            border: '1px solid rgba(184,134,11,.38)',
+            color: 'var(--ink)',
           }}
         />
         {loading && (
@@ -104,8 +104,8 @@ export function SearchBar({ onSelectHerb }: Props) {
         <div
           className="search-dropdown absolute top-full left-0 right-0 mt-1 z-50 max-h-64 overflow-y-auto"
           style={{
-            background: '#F4E4BC',
-            border: '1px solid #C9A84C60',
+            background: 'var(--parchment)',
+            border: '1px solid rgba(184,134,11,.38)',
             boxShadow: '0 8px 24px rgba(28,18,8,0.3)',
           }}
         >
@@ -113,9 +113,11 @@ export function SearchBar({ onSelectHerb }: Props) {
             <button
               key={herb.id}
               onClick={() => handleSelect(herb)}
-              className="search-result w-full text-left px-4 py-2 transition-colors duration-150 hover:bg-gold/20"
+              className="search-result w-full text-left px-4 py-2 transition-colors duration-150"
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(184,134,11,.14)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
-              <span className="font-cinzel text-xs" style={{ color: '#1C1208', fontSize: '12px' }}>
+              <span className="f-philosopher text-xs" style={{ color: 'var(--ink)', fontSize: '13px', fontWeight: 700 }}>
                 {highlight(herb.name)}
               </span>
             </button>
@@ -126,9 +128,9 @@ export function SearchBar({ onSelectHerb }: Props) {
       {open && query && results.length === 0 && !loading && (
         <div
           className="search-dropdown absolute top-full left-0 right-0 mt-1 z-50 px-4 py-3 text-center"
-          style={{ background: '#F4E4BC', border: '1px solid #C9A84C60' }}
+          style={{ background: 'var(--parchment)', border: '1px solid rgba(184,134,11,.38)' }}
         >
-          <p className="font-garamond italic text-sm" style={{ color: '#3D2B1F', opacity: 0.6 }}>
+          <p className="f-italic text-sm" style={{ color: 'var(--ink-soft)', opacity: 0.7 }}>
             Трава не найдена
           </p>
         </div>

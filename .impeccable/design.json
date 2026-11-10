@@ -78,6 +78,11 @@
         "displayName": "Панель",
         "canonical": "rgba(9,13,21,0.97)"
       },
+      "error": {
+        "role": "secondary",
+        "displayName": "Красный ошибки",
+        "canonical": "oklch(60% 0.18 34)"
+      },
       "r-common": {
         "role": "tertiary",
         "displayName": "Зелёный камень",
@@ -182,10 +187,10 @@
       "css": ".ds-btn-chrome { padding: 6px 13px; font-family: 'Cormorant SC', serif; font-size: 12.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-muted, #B8860B); background: rgba(184,134,11,.10); border: 1px solid rgba(184,134,11,.4); border-radius: 0; cursor: pointer; white-space: nowrap; transition: background .2s, border-color .2s; } .ds-btn-chrome:hover { background: rgba(184,134,11,.18); border-color: rgba(184,134,11,.6); } .ds-btn-chrome:focus-visible { outline: 2px solid var(--gold-muted, #B8860B); outline-offset: 2px; }"
     },
     {
-      "name": "Навигационная стрелка (долг)",
+      "name": "Навигационная стрелка (старое золото)",
       "kind": "nav",
       "refersTo": "nav-arrow",
-      "description": "Перелистывание разворота. Единственный элемент с радиусом рядом с книгой и на старом золоте — самое заметное место технического долга.",
+      "description": "Перелистывание разворота. Единственный элемент с радиусом рядом с книгой и на старом золоте. Перевод на канон был сделан и отклонён — вид подтверждён, см. The Old-Arrows Exception.",
       "html": "<button class=\"ds-nav-arrow\" aria-label=\"Вперёд\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M9 18l6-6-6-6\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></button>",
       "css": ".ds-nav-arrow { display: flex; align-items: center; justify-content: center; width: 52px; height: 80px; color: #C9A84C; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.35); border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.3); cursor: pointer; transition: background .2s, border-color .2s; } .ds-nav-arrow:hover { background: rgba(201,168,76,0.2); } .ds-nav-arrow:focus-visible { outline: 2px solid #C9A84C; outline-offset: 2px; } .ds-nav-arrow:disabled { color: transparent; background: transparent; border-color: transparent; box-shadow: none; cursor: default; }"
     },
@@ -193,9 +198,9 @@
       "name": "Поисковое поле",
       "kind": "input",
       "refersTo": "search-input",
-      "description": "Поиск по открытым травам в верхней панели. Пергаментное поле без радиуса, курсивный плейсхолдер.",
+      "description": "Поиск по открытым травам в верхней панели. Пергаментное поле без радиуса, курсивный плейсхолдер, лупа и рамка на gold-muted.",
       "html": "<div class=\"ds-search\"><svg class=\"ds-search__icon\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\"><circle cx=\"11\" cy=\"11\" r=\"8\" stroke=\"currentColor\" stroke-width=\"2\"/><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\" stroke=\"currentColor\" stroke-width=\"2\"/></svg><input class=\"ds-search__field\" type=\"text\" placeholder=\"Найти траву...\"></div>",
-      "css": ".ds-search { position: relative; display: flex; align-items: center; width: 320px; } .ds-search__icon { position: absolute; left: 12px; color: #C9A84C; opacity: .7; pointer-events: none; } .ds-search__field { width: 100%; padding: 8px 16px 8px 36px; font-family: 'EB Garamond', serif; font-size: 14px; color: var(--ink, #1C1208); background: rgba(244,228,188,0.9); border: 1px solid rgba(201,168,76,.38); border-radius: 0; } .ds-search__field::placeholder { color: var(--ink-soft, #3D2B1F); opacity: .45; font-style: italic; } .ds-search__field:focus { outline: none; border-color: rgba(201,168,76,.8); }"
+      "css": ".ds-search { position: relative; display: flex; align-items: center; width: 320px; } .ds-search__icon { position: absolute; left: 12px; color: var(--gold-muted, #B8860B); opacity: .8; pointer-events: none; } .ds-search__field { width: 100%; padding: 8px 16px 8px 36px; font-family: 'EB Garamond', serif; font-size: 14px; color: var(--ink, #1C1208); background: rgba(244,228,188,0.9); border: 1px solid rgba(184,134,11,.38); border-radius: 0; } .ds-search__field::placeholder { color: var(--ink-soft, #3D2B1F); opacity: .45; font-style: italic; } .ds-search__field:focus { outline: none; border-color: rgba(184,134,11,.8); }"
     },
     {
       "name": "Медальон закрытия",
@@ -219,7 +224,9 @@
     ],
     "rules": [
       { "name": "The Rarity-Only Rule", "body": "Насыщенный цвет на странице означает редкость травы и ничего больше. Статусы, подсветки, выделения и состояния решаются золотом, чернилами и прозрачностью — не новой краской.", "section": "colors" },
-      { "name": "The Legacy Gold Rule", "body": "gold-legacy (#C9A84C) — технический долг, а не токен. Новый код пишется только на gold-muted (#B8860B). Существующие места не переводятся заодно с другой задачей: это отдельная правка. Долг живёт в Book.tsx (верхняя панель, стрелки, счётчик), SearchBar.tsx, App.tsx (экраны загрузки и ошибки) и в tailwind.config.js.", "section": "colors" },
+      { "name": "The Legacy Gold Rule", "body": "gold-legacy (#C9A84C) — технический долг, а не токен. Новый код пишется только на gold-muted (#B8860B). Существующие места не переводятся заодно с другой задачей: это отдельная правка. После миграции хрома долг живёт в Book.tsx (счётчик разворотов, подсказка свайпа, тень книги), в tailwind.config.js и в скроллбаре (index.css, ::-webkit-scrollbar-thumb); мёртвые GalleryIndex.tsx и LockedHerb.tsx не считаются. Навигационные стрелки из долга исключены — см. The Old-Arrows Exception.", "section": "colors" },
+      { "name": "The Old-Arrows Exception", "body": "Навигационные стрелки книги (Book.tsx) остаются на старом золоте (#C9A84C) и радиусе 8px. Это решение, а не недоделка: перевод на gold-muted и прямой угол был сделан 10.11.2026, показан и отклонён — старый вид стрелок предпочтён каноническому. Их не «чинят» заодно с другой задачей, не вносят в правки по канону и не записывают в находки аудита. Менять — только по отдельному запросу.", "section": "components" },
+      { "name": "The Error-Red Rule", "body": "error (#D84A2C) — единственное исключение из The Rarity-Only Rule, и оно ограничено одним местом: заголовок «Ошибка загрузки» в App.tsx. Токен существует потому, что канонические красные на ночном фоне нечитаемы: vermilion даёт 2.13:1, oxblood — 1.68:1, прежний ad-hoc #c0392b — 3.63:1. Токен рассчитан под night (4.64:1) и только под него: на пергаменте это 3.38:1, порог не проходит, поэтому в книгу, модалки и на страницу он не идёт.", "section": "colors" },
       { "name": "The Seven-Band Rule", "body": "Рамка «страницы» — всегда семь слоёв в порядке чернь → синь → золото → киноварь → золото → зелень → золото. Меняются только толщины и отступы (PageBorder — щедрые, SpreadBorder — вдвое тоньше). Порядок не меняется и слои не выбрасываются.", "section": "colors" },
       { "name": "The Drop-Cap Rule", "body": "Буквица (.drop-cap, Philosopher 2.6em, золотом) ставится только на первый абзац описания травы. Второй буквицы в системе не бывает.", "section": "typography" },
       { "name": "The Voice-Not-Size Rule", "body": "Гарнитура выбирается по роли текста, а не по его размеру. Надпись остаётся капителью, даже когда она крупная; проза остаётся гарамоном, даже когда она мелкая.", "section": "typography" },
@@ -232,11 +239,14 @@
       "Do держать прямые углы. Радиус в книге — ошибка.",
       "Do ставить капитель только с разрядкой от 0.14em.",
       "Do рисовать рамки кольцами inset-тени, а не border — так они вкладываются без роста геометрии.",
-      "Do резервировать место под отсутствующие элементы (EmptySlot), а не схлопывать сетку."
+      "Do резервировать место под отсутствующие элементы (EmptySlot), а не схлопывать сетку.",
+      "Do проверять любой цвет на ночном фоне счётом, а не глазом: night настолько тёмный, что канонические красные и зелёные на нём проваливаются ниже 2:1."
     ],
     "donts": [
       "Don't вводить новый насыщенный цвет: яркая краска в системе означает редкость травы.",
       "Don't использовать gold-legacy (#C9A84C), Cinzel Decorative и Tailwind-токены rarity.legendary в новом коде — это остатки первого поколения.",
+      "Don't переводить навигационные стрелки книги на канон: их вид подтверждён отдельным решением (The Old-Arrows Exception), а не забыт.",
+      "Don't выносить error за ночной экран ошибки: на пергаменте он не проходит по контрасту, а внутри книги спорит со шкалой редкости.",
       "Don't подменять гербовый щит редкости капсулой, чипом или цветной таблеткой.",
       "Don't ставить вторую буквицу: она принадлежит первому абзацу описания и только ему.",
       "Don't отказываться от метафоры книги на узких экранах — разворот схлопывается в страницу, но перелистывание и рамки остаются.",
