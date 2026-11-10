@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Herb, HerbOrStub, Player, isFullHerb } from '../types';
 import { BookSpread } from './BookSpread';
 import { useBook } from '../hooks/useBook';
@@ -76,7 +76,18 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
 
   const [showLogin, setShowLogin] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
+  const [showSheet, setShowSheet] = useState(false);
   const [selectedHerb, setSelectedHerb] = useState<Herb | null>(null);
+  const identityRef = useRef<HTMLDivElement>(null);
+
+  // Лист игрока закрывается по клику мимо — как выдача поиска
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (identityRef.current && !identityRef.current.contains(e.target as Node)) setShowSheet(false);
+    };
+    document.addEventListener('mousedown', onDown);
+    return () => document.removeEventListener('mousedown', onDown);
+  }, []);
 
   const handleHerbClick = (herb: HerbOrStub) => {
     if (isFullHerb(herb)) {
@@ -117,21 +128,79 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
           zIndex: 100,
         }}
       >
-        <span className="f-cormorant-sc flex-shrink-0" style={{
-          color: 'var(--gold-muted)', fontSize: 16, letterSpacing: '.2em',
-          whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 8,
-        }}>
-          <svg width="14" height="14" viewBox="0 0 18 18">
-            <path d="M9,1 l2,6 l6,0 l-5,4 l2,6 l-5,-4 l-5,4 l2,-6 l-5,-4 l6,0 Z" fill="#8B1A1A" opacity=".9" />
-          </svg>
-          КОДЕКС ТРАВ
-        </span>
+        {/* Заголовок занимает 162 px — на мобильном уступает их поиску */}
+        {!isMobile && (
+          <span className="f-cormorant-sc flex-shrink-0" style={{
+            color: 'var(--gold-muted)', fontSize: 16, letterSpacing: '.2em',
+            whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 8,
+          }}>
+            <svg width="14" height="14" viewBox="0 0 18 18">
+              <path d="M9,1 l2,6 l6,0 l-5,4 l2,6 l-5,-4 l-5,4 l2,-6 l-5,-4 l6,0 Z" fill="#8B1A1A" opacity=".9" />
+            </svg>
+            КОДЕКС ТРАВ
+          </span>
+        )}
 
         <div className="flex-1" style={{ minWidth: isMobile ? 0 : undefined }}>
           <SearchBar onSelectHerb={handleSearchSelect} />
         </div>
 
         {player ? (
+          isMobile ? (
+          <div ref={identityRef} style={{ position: 'relative', flexShrink: 0 }}>
+            <button
+              onClick={() => (isMaster ? setShowPanel(true) : setShowSheet(v => !v))}
+              aria-label={isMaster ? `${player.name} — панель мастера` : player.name}
+              style={{
+                width: 44, height: 44, display: 'grid', placeItems: 'center',
+                background: 'rgba(184,134,11,.1)', border: '1px solid rgba(184,134,11,.4)',
+                color: isMaster ? '#d9a93a' : 'var(--gold-muted)', cursor: 'pointer',
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                {isMaster
+                  ? <path d="M3 17l2-9 4 4 3-7 3 7 4-4 2 9z" strokeLinejoin="round" />
+                  : <><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" strokeLinecap="round" /></>}
+              </svg>
+            </button>
+
+            {showSheet && !isMaster && (
+              <div style={{
+                position: 'absolute', top: '100%', right: 0, marginTop: 6, zIndex: 120,
+                minWidth: 196, background: 'rgba(9,13,21,.98)',
+                border: '1px solid rgba(184,134,11,.4)',
+                boxShadow: '0 10px 30px rgba(0,0,0,.6)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '11px 14px' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="var(--gold-muted)" strokeWidth="1.7">
+                    <circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" strokeLinecap="round" />
+                  </svg>
+                  <span className="f-italic" style={{ color: 'var(--birch)', fontSize: 16, opacity: .9 }}>{player.name}</span>
+                </div>
+                <div style={{ height: 1, background: 'rgba(184,134,11,.25)' }} />
+                <button
+                  onClick={() => { setShowSheet(false); onLogout(); }}
+                  className="f-cormorant-sc"
+                  style={{
+                    width: '100%', minHeight: 44, display: 'flex', alignItems: 'center', gap: 10,
+                    padding: '0 14px', background: 'none', border: 'none', cursor: 'pointer',
+                    color: 'var(--gold-muted)', fontSize: 13, letterSpacing: '.1em',
+                    textTransform: 'uppercase', fontWeight: 600,
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                  </svg>
+                  Выйти
+                </button>
+              </div>
+            )}
+          </div>
+          ) : (
           <span style={{ display: 'flex', alignItems: 'center', gap: 7, whiteSpace: 'nowrap' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
               stroke={isMaster ? '#d9a93a' : 'var(--gold-muted)'} strokeWidth="1.7">
@@ -141,6 +210,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
             </svg>
             <span className="f-italic" style={{ color: 'var(--birch)', fontSize: 15, opacity: .9 }}>{player.name}</span>
           </span>
+          )
         ) : (
           <button onClick={() => setShowLogin(true)} className="f-cormorant-sc flex-shrink-0" style={{
             fontSize: 12.5, padding: '6px 13px', letterSpacing: '.1em',
@@ -150,7 +220,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
           }}>Войти</button>
         )}
 
-        {isMaster && (
+        {isMaster && !isMobile && (
           <button onClick={() => setShowPanel(p => !p)} className="f-cormorant-sc flex-shrink-0" style={{
             fontSize: 12.5, padding: '6px 13px', letterSpacing: '.1em',
             textTransform: 'uppercase', fontWeight: 600,
@@ -159,7 +229,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
           }}>Панель Мастера</button>
         )}
 
-        {player && (
+        {player && !isMobile && (
           <button onClick={onLogout} title="Выйти" className="flex-shrink-0" style={{
             background: 'none', border: 'none', color: 'var(--gold-muted)',
             opacity: 0.6, padding: 4, display: 'grid', placeItems: 'center', transition: 'opacity .2s',
