@@ -197,7 +197,7 @@ Render buildCommand использует `npm install --include=dev` — это 
 - **Нет тестов** — проверка через TypeScript и ручной запуск
 - **Один PrismaClient на роутер** — экземпляр создаётся в `routes/herbs.ts`, не синглтон
 - **Изображения** — сохраняются в `server/uploads/`, путь записывается в `imageUrl` как `/uploads/filename.ext`, отдаются как статика через `express.static`. Перед загрузкой DM-панель кадрирует фото на canvas (`PhotoCropModal.tsx`) и отправляет уже обрезанный JPEG-блоб — серверный эндпоинт `/:id/image` не изменился (тот же multipart-аплоад)
-- **Мобильная адаптивность** — на экранах `< md` правая страница книги скрыта (`hidden md:block`), показывается только левая
+- **Мобильная адаптивность** — не CSS, а условный рендер: `useBook` держит `isMobile` через `matchMedia('(max-width: 767px)')`, `BookSpread` по флагам `showLeft`/`showRight`/`showBinding` вообще не рендерит вторую страницу и переплёт. Навигация идёт по одиночным страницам (`mobileSide: 'left' | 'right'`), добавляется свайп (порог 60px). Размеры элементов задаются тернарниками `isMobile ? ... : ...`
 - **Шрифты** — Cinzel Decorative/Philosopher (заголовки), EB Garamond/Istok Web (основной текст), Cormorant Garamond italic/Cormorant SC (латынь, орнаментальные надписи). Подключены в `index.html` через Google Fonts
 - **Модальное окно** — `HerbDetailModal` закрывается по `Escape` и клику за пределами; иллюстрация слева, переплёт (`ModalSpine`), описание/эффекты справа в одну колонку (блока "свойства" в модалке нет — поле `properties` остаётся в БД и форме DM-панели, но не выводится в просмотре травы)
 
