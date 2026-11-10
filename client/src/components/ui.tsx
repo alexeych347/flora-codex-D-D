@@ -204,7 +204,7 @@ export function HerbGridPage({ herbs, onHerbClick, isMobile = false }:
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
       <SpreadBorder />
-      <div style={{ position: 'relative', zIndex: 5, flex: 1, display: 'flex', flexDirection: 'column', padding: isMobile ? '14px 14px 14px' : '30px 30px 30px' }}>
+      <div style={{ position: 'relative', zIndex: 5, flex: 1, display: 'flex', flexDirection: 'column', padding: isMobile ? '26px 15px 16px' : '30px 30px 30px' }}>
         <PageHeader />
         <div style={{
           flex: 1, minHeight: 0,

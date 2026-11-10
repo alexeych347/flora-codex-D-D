@@ -82,7 +82,7 @@ export function HerbDetailModal({ herb, onClose, isMobile = false }: Props) {
 
         <div style={{
           flex: 1, minWidth: 0,
-          padding: isMobile ? '0 24px 34px' : '52px 40px 48px 16px',
+          padding: isMobile ? '0 32px 34px' : '52px 40px 48px 16px',
           overflowY: isMobile ? 'visible' : 'auto',
           position: 'relative', zIndex: 10,
         }}>
