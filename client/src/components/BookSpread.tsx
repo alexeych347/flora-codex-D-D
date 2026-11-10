@@ -44,14 +44,14 @@ export function BookSpread({ currentSpread, herbs, onHerbClick, mobileSide, isMo
       {showLeft && (
         <div className="book-page book-page-left relative flex-1">
           <PageTexture />
-          <HerbGridPage herbs={leftHerbs} onHerbClick={onHerbClick} />
+          <HerbGridPage herbs={leftHerbs} onHerbClick={onHerbClick} isMobile={isMobile} />
         </div>
       )}
       {showBinding && <BookBinding />}
       {showRight && (
         <div className="book-page book-page-right relative flex-1">
           <PageTexture />
-          <HerbGridPage herbs={rightHerbs} onHerbClick={onHerbClick} />
+          <HerbGridPage herbs={rightHerbs} onHerbClick={onHerbClick} isMobile={isMobile} />
         </div>
       )}
     </>

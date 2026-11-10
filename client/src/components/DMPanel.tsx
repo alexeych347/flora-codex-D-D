@@ -185,7 +185,7 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
   return (
     <div className="panel-in" style={{
       position: 'fixed', top: 0, right: 0, bottom: 0,
-      zIndex: 190, width: 380,
+      zIndex: 190, width: 'min(380px, 100%)',
       display: 'flex', flexDirection: 'column',
       background: '#140d04',
       borderLeft: '1px solid rgba(184,134,11,.3)',

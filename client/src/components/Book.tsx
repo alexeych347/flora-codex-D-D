@@ -101,7 +101,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
           КОДЕКС ТРАВ
         </span>
 
-        <div className="flex-1">
+        <div className="flex-1" style={{ minWidth: isMobile ? 0 : undefined }}>
           <SearchBar onSelectHerb={handleSearchSelect} />
         </div>
 
@@ -174,7 +174,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
           </button>
 
           {/* Book */}
-          <div className="flex-1 flex flex-col items-center gap-2 md:gap-3">
+          <div className="flex-1 flex flex-col items-center gap-2 md:gap-3" style={{ minWidth: isMobile ? 0 : undefined }}>
             <div
               className="book relative flex items-stretch animate-fade-in w-full"
               style={{

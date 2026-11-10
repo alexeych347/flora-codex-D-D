@@ -43,7 +43,7 @@ export function LoginScreen({ onLogin, onClose }: Props) {
       background: 'rgba(8,11,18,.8)', backdropFilter: 'blur(4px)',
     }}>
       <form onSubmit={submit} onClick={e => e.stopPropagation()} className="modal-pop" style={{
-        position: 'relative', width: 440,
+        position: 'relative', width: 'min(440px, 100%)',
         background: '#120c04',
         boxShadow: '0 50px 100px rgba(0,0,0,.7)',
         color: 'var(--gold-muted)', overflow: 'visible',

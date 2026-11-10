@@ -101,7 +101,8 @@ export function RarityLegend() {
 }
 
 /* — карточка изученной травы — */
-export function HerbCard({ herb, onClick }: { herb: HerbOrStub & { isUnlocked: true }; onClick: () => void }) {
+export function HerbCard({ herb, onClick, isMobile = false }:
+  { herb: HerbOrStub & { isUnlocked: true }; onClick: () => void; isMobile?: boolean }) {
   const color = RARITY_COLORS[herb.rarity];
   return (
     <button onClick={onClick} className="hover-lift" style={{
@@ -143,6 +144,7 @@ export function HerbCard({ herb, onClick }: { herb: HerbOrStub & { isUnlocked: t
           <p className="f-philosopher" style={{
             color: 'var(--ink)', fontSize: 17.5, fontWeight: 700,
             lineHeight: 1.12, height: '2.24em', marginBottom: 6,
+            overflowWrap: isMobile ? 'anywhere' : undefined,
             display: '-webkit-box', WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical', overflow: 'hidden',
           }}>{herb.name}</p>
@@ -195,11 +197,12 @@ export function EmptySlot() {
 }
 
 /* — разворот с сеткой трав (4 травы: 2×2) — */
-export function HerbGridPage({ herbs, onHerbClick }: { herbs: HerbOrStub[]; onHerbClick: (herb: HerbOrStub) => void }) {
+export function HerbGridPage({ herbs, onHerbClick, isMobile = false }:
+  { herbs: HerbOrStub[]; onHerbClick: (herb: HerbOrStub) => void; isMobile?: boolean }) {
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
       <SpreadBorder />
-      <div style={{ position: 'relative', zIndex: 5, flex: 1, display: 'flex', flexDirection: 'column', padding: '30px 30px 30px' }}>
+      <div style={{ position: 'relative', zIndex: 5, flex: 1, display: 'flex', flexDirection: 'column', padding: isMobile ? '14px 14px 14px' : '30px 30px 30px' }}>
         <PageHeader />
         <div style={{
           flex: 1, minHeight: 0,
@@ -212,7 +215,7 @@ export function HerbGridPage({ herbs, onHerbClick }: { herbs: HerbOrStub[]; onHe
             const herb = herbs[i];
             if (!herb) return <EmptySlot key={i} />;
             if (!isFullHerb(herb)) return <LockedHerbCard key={herb.id} herb={herb} />;
-            return <HerbCard key={herb.id} herb={herb} onClick={() => onHerbClick(herb)} />;
+            return <HerbCard key={herb.id} herb={herb} onClick={() => onHerbClick(herb)} isMobile={isMobile} />;
           })}
         </div>
         <RarityLegend />
