@@ -140,7 +140,7 @@ export function HerbCard({ herb, onClick, isMobile = false }:
           <HairDivider width="100%" color={color} />
         </div>
 
-        <div style={{ flexShrink: 0, padding: '1px 11px 9px' }}>
+        <div style={{ flexShrink: 0, padding: isMobile ? '1px 8px 9px' : '1px 11px 9px' }}>
           <p className="f-philosopher" style={{
             color: 'var(--ink)', fontSize: 17.5, fontWeight: 700,
             lineHeight: 1.12, height: '2.24em', marginBottom: 6,
@@ -204,14 +204,14 @@ export function HerbGridPage({ herbs, onHerbClick, isMobile = false }:
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
       <SpreadBorder />
-      <div style={{ position: 'relative', zIndex: 5, flex: 1, display: 'flex', flexDirection: 'column', padding: isMobile ? '26px 15px 16px' : '30px 30px 30px' }}>
+      <div style={{ position: 'relative', zIndex: 5, flex: 1, display: 'flex', flexDirection: 'column', padding: isMobile ? '34px' : '30px 30px 30px' }}>
         <PageHeader />
         <div style={{
           flex: 1, minHeight: 0,
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gridTemplateRows: 'minmax(0,1fr) minmax(0,1fr)',
-          gap: 11,
+          gap: isMobile ? 9 : 11,
         }}>
           {[0, 1, 2, 3].map(i => {
             const herb = herbs[i];
