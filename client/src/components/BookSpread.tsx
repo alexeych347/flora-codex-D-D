@@ -21,7 +21,7 @@ export function BookSpread({ currentSpread, herbs, onHerbClick, mobileSide, isMo
         {showLeft && (
           <div className="book-page book-page-left relative flex-1">
             <PageTexture />
-            <CoverLeftPage />
+            <CoverLeftPage isMobile={isMobile} />
           </div>
         )}
         {showBinding && <BookBinding />}

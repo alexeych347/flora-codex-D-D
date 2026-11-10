@@ -226,7 +226,7 @@ export function HerbGridPage({ herbs, onHerbClick, isMobile = false }:
 
 /* ===================== ОБЛОЖКА ===================== */
 
-export function CoverLeftPage() {
+export function CoverLeftPage({ isMobile = false }: { isMobile?: boolean }) {
   return (
     <div style={{ height: '100%', position: 'relative', overflow: 'hidden' }}>
       <PageBorder />
@@ -249,7 +249,7 @@ export function CoverLeftPage() {
         </div>
 
         <div style={{ textAlign: 'center', width: '100%' }}>
-          <h1 className="f-philosopher" style={{ color: 'var(--ink)', fontSize: 42, fontWeight: 700, letterSpacing: '.14em', lineHeight: 1 }}>КОДЕКС</h1>
+          <h1 className="f-philosopher" style={{ color: 'var(--ink)', fontSize: isMobile ? 30 : 42, fontWeight: 700, letterSpacing: '.14em', lineHeight: 1, marginRight: '-.14em' }}>КОДЕКС</h1>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, margin: '5px 0' }}>
             <span style={{ height: 1.5, flex: 1, maxWidth: 78, background: 'linear-gradient(to right,transparent,#8B1A1A)' }} />
             <svg width="16" height="16" viewBox="0 0 18 18">
@@ -257,14 +257,13 @@ export function CoverLeftPage() {
             </svg>
             <span style={{ height: 1.5, flex: 1, maxWidth: 78, background: 'linear-gradient(to left,transparent,#8B1A1A)' }} />
           </div>
-          <h1 className="f-philosopher" style={{ color: 'var(--ink)', fontSize: 42, fontWeight: 700, letterSpacing: '.14em', lineHeight: 1 }}>ТРАВ</h1>
+          <h1 className="f-philosopher" style={{ color: 'var(--ink)', fontSize: isMobile ? 30 : 42, fontWeight: 700, letterSpacing: '.14em', lineHeight: 1, marginRight: '-.14em' }}>ТРАВ</h1>
         </div>
 
         <div style={{ color: 'var(--gold-muted)', width: '74%', display: 'flex', justifyContent: 'center' }}>
           <FloralDivider width="100%" flip />
         </div>
 
-        <p className="f-italic" style={{ color: 'var(--ink-soft)', fontSize: 17, opacity: .7, textAlign: 'center' }}>собран в великих странствиях</p>
       </div>
     </div>
   );
