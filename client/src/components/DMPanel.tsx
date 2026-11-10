@@ -8,6 +8,7 @@ interface Props {
   onClose: () => void;
   onLogout: () => void;
   onRefresh: () => void;
+  isMobile?: boolean;
 }
 
 interface HerbForm {
@@ -46,7 +47,7 @@ function Toggle({ on, onClick, title }: { on: boolean; onClick: () => void; titl
   );
 }
 
-export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
+export function DMPanel({ herbs, onClose, onLogout, onRefresh, isMobile = false }: Props) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [form, setForm] = useState<HerbForm | null>(null);
   const [saving, setSaving] = useState(false);
@@ -185,23 +186,54 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh }: Props) {
   return (
     <div className="panel-in" style={{
       position: 'fixed', top: 0, right: 0, bottom: 0,
-      zIndex: 190, width: 'min(380px, 100%)',
+      left: isMobile ? 0 : undefined,
+      zIndex: 190, width: isMobile ? '100%' : 'min(380px, 100%)',
       display: 'flex', flexDirection: 'column',
       background: '#140d04',
-      borderLeft: '1px solid rgba(184,134,11,.3)',
-      boxShadow: '-12px 0 40px rgba(0,0,0,.6)',
+      borderLeft: isMobile ? 'none' : '1px solid rgba(184,134,11,.3)',
+      boxShadow: isMobile ? 'none' : '-12px 0 40px rgba(0,0,0,.6)',
       color: 'var(--gold-muted)',
     }}>
       <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
       {crop && <PhotoCropModal src={crop.src} onApply={crop.onApply} onCancel={() => setCrop(null)} />}
 
+      {isMobile ? (
+        <div style={{ flexShrink: 0, borderBottom: '1px solid rgba(184,134,11,.18)' }}>
+          <button
+            onClick={onClose}
+            className="f-cormorant-sc"
+            style={{
+              width: '100%', minHeight: 44, display: 'flex', alignItems: 'center', gap: 9,
+              padding: '0 16px', background: 'rgba(184,134,11,.07)', border: 'none',
+              borderBottom: '1px solid rgba(184,134,11,.14)', cursor: 'pointer',
+              color: 'var(--gold-muted)', fontSize: 13, letterSpacing: '.12em',
+              textTransform: 'uppercase', fontWeight: 600,
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+            К атласу
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px' }}>
+            <h2 className="f-philosopher" style={{ fontSize: 21, fontWeight: 700 }}>Панель Мастера</h2>
+            <button onClick={onLogout} className="f-cormorant-sc" style={{
+              minHeight: 44, padding: '0 14px', fontSize: 12.5, letterSpacing: '.1em',
+              textTransform: 'uppercase', fontWeight: 600, background: 'none',
+              border: '1px solid rgba(184,134,11,.4)', color: 'var(--gold-muted)', cursor: 'pointer',
+            }}>Выйти</button>
+          </div>
+        </div>
+      ) : (
       <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px', borderBottom: '1px solid rgba(184,134,11,.18)' }}>
         <h2 className="f-philosopher" style={{ fontSize: 21, fontWeight: 700 }}>Панель Мастера</h2>
         <div style={{ display: 'flex', gap: 10 }}>
           <button onClick={onLogout} className="f-body" style={{ fontSize: 12, background: 'none', border: '1px solid rgba(184,134,11,.3)', color: 'var(--gold-muted)', padding: '4px 9px', cursor: 'pointer' }}>Выйти</button>
-          <button onClick={onClose} style={{ fontSize: 18, padding: '0 4px', background: 'none', border: 'none', color: 'var(--birch)', opacity: .45, cursor: 'pointer' }}>✕</button>
+          <button onClick={onClose} aria-label="Закрыть панель мастера" style={{ fontSize: 18, padding: '0 4px', background: 'none', border: 'none', color: 'var(--birch)', opacity: .45, cursor: 'pointer' }}>✕</button>
         </div>
       </div>
+      )}
 
       <div style={{ flexShrink: 0, padding: '9px 18px', borderBottom: '1px solid rgba(184,134,11,.12)', background: 'rgba(184,134,11,.05)' }}>
         <p className="f-italic" style={{ fontSize: 13.5, opacity: .62, lineHeight: 1.4 }}>

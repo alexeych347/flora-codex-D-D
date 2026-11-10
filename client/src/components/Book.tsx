@@ -325,6 +325,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
       {isMaster && showPanel && (
         <DMPanel
           herbs={herbs}
+          isMobile={isMobile}
           onClose={() => setShowPanel(false)}
           onLogout={() => { onLogout(); setShowPanel(false); }}
           onRefresh={onRefresh}
