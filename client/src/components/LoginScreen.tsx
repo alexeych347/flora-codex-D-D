@@ -6,9 +6,10 @@ import { CornerOrnament, FloralDivider } from './ornaments';
 interface Props {
   onLogin: (playerId: string, password: string) => Promise<void>;
   onClose: () => void;
+  isMobile?: boolean;
 }
 
-export function LoginScreen({ onLogin, onClose }: Props) {
+export function LoginScreen({ onLogin, onClose, isMobile = false }: Props) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [userId, setUserId] = useState('');
   const [pw, setPw] = useState('');
@@ -127,7 +128,7 @@ export function LoginScreen({ onLogin, onClose }: Props) {
           }}>{loading ? 'Проверка…' : 'Войти'}</button>
 
           <button type="button" onClick={onClose} className="f-cormorant-sc" style={{
-            marginTop: 14, padding: '7px 4px', fontSize: 13.5, letterSpacing: '.08em',
+            marginTop: 14, padding: '7px 4px', minHeight: isMobile ? 44 : undefined, fontSize: 13.5, letterSpacing: '.08em',
             background: 'none', border: 'none', color: 'var(--gold-muted)', opacity: .7,
             cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7,
           }}>

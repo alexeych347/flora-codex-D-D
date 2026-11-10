@@ -4,9 +4,10 @@ import { Herb } from '../types';
 
 interface Props {
   onSelectHerb: (herb: Herb) => void;
+  isMobile?: boolean;
 }
 
-export function SearchBar({ onSelectHerb }: Props) {
+export function SearchBar({ onSelectHerb, isMobile = false }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Herb[]>([]);
   const [open, setOpen] = useState(false);
@@ -88,8 +89,10 @@ export function SearchBar({ onSelectHerb }: Props) {
           value={query}
           onChange={e => setQuery(e.target.value)}
           placeholder="Найти траву..."
+          aria-label="Поиск травы"
           className="search-input w-full pl-9 pr-4 py-2 f-prose text-sm focus:outline-none"
           style={{
+            minHeight: isMobile ? 44 : undefined,
             background: 'rgba(244,228,188,0.9)',
             border: '1px solid rgba(184,134,11,.38)',
             color: 'var(--ink)',
@@ -114,6 +117,7 @@ export function SearchBar({ onSelectHerb }: Props) {
               key={herb.id}
               onClick={() => handleSelect(herb)}
               className="search-result w-full text-left px-4 py-2 transition-colors duration-150"
+              style={{ minHeight: isMobile ? 44 : undefined }}
               onMouseEnter={e => (e.currentTarget.style.background = 'rgba(184,134,11,.14)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >

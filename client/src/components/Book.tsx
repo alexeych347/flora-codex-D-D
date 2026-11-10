@@ -41,6 +41,7 @@ function NavArrow({ dir, enabled, onClick, isMobile }: {
     <button
       onClick={onClick}
       disabled={!enabled}
+      aria-label={dir === 'prev' ? 'Предыдущая страница' : 'Следующая страница'}
       className="flex-shrink-0 flex items-center justify-center rounded-lg transition-all duration-200"
       style={{
         width: isMobile ? '44px' : '52px',
@@ -142,7 +143,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
         )}
 
         <div className="flex-1" style={{ minWidth: isMobile ? 0 : undefined }}>
-          <SearchBar onSelectHerb={handleSearchSelect} />
+          <SearchBar onSelectHerb={handleSearchSelect} isMobile={isMobile} />
         </div>
 
         {player ? (
@@ -213,7 +214,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
           )
         ) : (
           <button onClick={() => setShowLogin(true)} className="f-cormorant-sc flex-shrink-0" style={{
-            fontSize: 12.5, padding: '6px 13px', letterSpacing: '.1em',
+            fontSize: 12.5, padding: isMobile ? '0 15px' : '6px 13px', minHeight: isMobile ? 44 : undefined, letterSpacing: '.1em',
             textTransform: 'uppercase', fontWeight: 600,
             background: 'rgba(184,134,11,.1)', border: '1px solid rgba(184,134,11,.4)',
             color: 'var(--gold-muted)', cursor: 'pointer', whiteSpace: 'nowrap',
@@ -257,7 +258,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
             <div
               className="book relative flex items-stretch animate-fade-in w-full"
               style={{
-                minHeight: isMobile ? '480px' : '680px',
+                minHeight: isMobile ? '560px' : '680px',
                 background: '#F4E4BC',
                 boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.15), 8px 8px 30px rgba(0,0,0,0.5)',
                 overflow: 'hidden',
@@ -317,6 +318,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
       {showLogin && (
         <LoginScreen
           onLogin={onLogin}
+          isMobile={isMobile}
           onClose={() => setShowLogin(false)}
         />
       )}
@@ -336,6 +338,7 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
       {selectedHerb && (
         <HerbDetailModal
           herb={selectedHerb}
+          isMobile={isMobile}
           onClose={() => setSelectedHerb(null)}
         />
       )}

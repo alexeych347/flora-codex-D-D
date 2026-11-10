@@ -30,19 +30,43 @@ function asDMHerb(herb: HerbOrStub): Herb {
   return herb as unknown as Herb;
 }
 
-function Toggle({ on, onClick, title }: { on: boolean; onClick: () => void; title?: string }) {
+function Toggle({ on, onClick, title, isMobile = false }:
+  { on: boolean; onClick: () => void; title?: string; isMobile?: boolean }) {
+  const knob = (
+    <span style={{
+      position: 'absolute', top: 2, left: on ? 21 : 2,
+      width: 15, height: 15, borderRadius: '50%',
+      background: on ? 'var(--ink)' : '#7a6a4a', transition: 'left .18s',
+    }} />
+  );
+  const pill: React.CSSProperties = {
+    borderRadius: 999,
+    background: on ? 'var(--gold-muted)' : '#33240f',
+    border: `1px solid ${on ? 'rgba(184,134,11,.7)' : 'rgba(184,134,11,.35)'}`,
+    transition: 'background .15s',
+  };
+
+  // На мобильном сам тумблер прежнего размера, но кнопка вокруг него 44×44
+  if (isMobile) {
+    return (
+      <button onClick={onClick} title={title} aria-label={title} style={{
+        flexShrink: 0, width: 44, height: 44, padding: 0,
+        display: 'grid', placeItems: 'center',
+        background: 'none', border: 'none', cursor: 'pointer',
+      }}>
+        <span style={{ ...pill, display: 'block', width: 40, height: 21, position: 'relative' }}>
+          {knob}
+        </span>
+      </button>
+    );
+  }
+
   return (
-    <button onClick={onClick} title={title} style={{
-      flexShrink: 0, width: 40, height: 21, borderRadius: 999, position: 'relative',
-      background: on ? 'var(--gold-muted)' : '#33240f',
-      border: `1px solid ${on ? 'rgba(184,134,11,.7)' : 'rgba(184,134,11,.35)'}`,
-      cursor: 'pointer', transition: 'background .15s',
+    <button onClick={onClick} title={title} aria-label={title} style={{
+      flexShrink: 0, width: 40, height: 21, position: 'relative',
+      cursor: 'pointer', ...pill,
     }}>
-      <span style={{
-        position: 'absolute', top: 2, left: on ? 21 : 2,
-        width: 15, height: 15, borderRadius: '50%',
-        background: on ? 'var(--ink)' : '#7a6a4a', transition: 'left .18s',
-      }} />
+      {knob}
     </button>
   );
 }
@@ -173,7 +197,7 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh, isMobile = false 
   };
 
   const inputStyle: React.CSSProperties = {
-    width: '100%', padding: '9px 11px', fontSize: 15,
+    width: '100%', padding: '9px 11px', fontSize: 15, minHeight: isMobile ? 44 : undefined,
     color: 'var(--birch)', background: '#241608',
     border: '1px solid rgba(184,134,11,.25)', outline: 'none',
     fontFamily: "'Istok Web',sans-serif",
@@ -263,7 +287,8 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh, isMobile = false 
                   const key = `${h.id}:${p.id}`;
                   return (
                     <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <Toggle on={on} title={on ? 'Скрыть' : 'Открыть'}
+                      <Toggle on={on} isMobile={isMobile}
+                        title={`${p.name}: ${on ? 'скрыть траву' : 'открыть траву'}`}
                         onClick={() => togglingKey !== key && handleToggleAccess(h.id, p.id, on)} />
                       <span className="f-body" style={{ fontSize: 13.5, color: on ? 'var(--birch)' : 'rgba(245,240,232,.45)' }}>{p.name}</span>
                     </div>
@@ -272,9 +297,9 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh, isMobile = false 
               </div>
 
               <div style={{ display: 'flex', gap: 6 }}>
-                <button onClick={() => startEdit(herb)} className="f-body" style={{ fontSize: 12, padding: '4px 11px', background: 'none', border: '1px solid rgba(184,134,11,.3)', color: 'var(--gold-muted)', cursor: 'pointer' }}>Ред.</button>
+                <button onClick={() => startEdit(herb)} className="f-body" style={{ fontSize: 12, padding: '4px 11px', minHeight: isMobile ? 44 : undefined, background: 'none', border: '1px solid rgba(184,134,11,.3)', color: 'var(--gold-muted)', cursor: 'pointer' }}>Ред.</button>
                 <button onClick={() => handlePhotoClick(h.id)} className="f-body" style={{
-                  fontSize: 12, padding: '4px 11px', display: 'inline-flex', alignItems: 'center', gap: 5,
+                  fontSize: 12, padding: '4px 11px', minHeight: isMobile ? 44 : undefined, display: 'inline-flex', alignItems: 'center', gap: 5,
                   background: h.imageUrl ? 'rgba(184,134,11,.18)' : 'none',
                   border: '1px solid rgba(184,134,11,.4)',
                   color: h.imageUrl ? 'var(--gold-muted)' : 'rgba(184,134,11,.7)', cursor: 'pointer',
@@ -285,7 +310,7 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh, isMobile = false 
                   </svg>
                   {h.imageUrl ? 'Фото ✓' : 'Фото'}
                 </button>
-                <button onClick={() => handleDelete(h.id, h.name)} className="f-body" style={{ fontSize: 12, padding: '4px 11px', marginLeft: 'auto', background: 'none', border: '1px solid rgba(192,57,43,.35)', color: '#cf5a4d', cursor: 'pointer' }}>Удал.</button>
+                <button onClick={() => handleDelete(h.id, h.name)} className="f-body" style={{ fontSize: 12, padding: '4px 11px', minHeight: isMobile ? 44 : undefined, marginLeft: 'auto', background: 'none', border: '1px solid rgba(192,57,43,.35)', color: '#cf5a4d', cursor: 'pointer' }}>Удал.</button>
               </div>
             </div>
           );
@@ -300,7 +325,7 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh, isMobile = false 
         <div style={{ position: 'absolute', inset: 0, zIndex: 5, display: 'flex', flexDirection: 'column', background: '#140d04' }}>
           <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px', borderBottom: '1px solid rgba(184,134,11,.2)' }}>
             <h3 className="f-philosopher" style={{ fontSize: 18, fontWeight: 700 }}>{form.id ? 'Редактировать' : 'Новая трава'}</h3>
-            <button onClick={() => setForm(null)} style={{ background: 'none', border: 'none', color: 'var(--birch)', opacity: .45, fontSize: 16, cursor: 'pointer' }}>✕</button>
+            <button onClick={() => setForm(null)} aria-label="Закрыть форму" style={{ width: isMobile ? 44 : undefined, height: isMobile ? 44 : undefined, background: 'none', border: 'none', color: 'var(--birch)', opacity: .45, fontSize: 16, cursor: 'pointer' }}>✕</button>
           </div>
 
           <div style={{ flex: 1, overflowY: 'auto', padding: 18, display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -317,30 +342,30 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh, isMobile = false 
                       </svg>}
                 </div>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 7, justifyContent: 'center' }}>
-                  <button type="button" onClick={() => formFileRef.current?.click()} className="f-cormorant-sc" style={{ padding: '9px 12px', fontSize: 13, letterSpacing: '.08em', fontWeight: 600, textTransform: 'uppercase', textAlign: 'center', background: 'var(--gold-muted)', border: 'none', color: 'var(--ink)', cursor: 'pointer' }}>{form.imageUrl ? 'Заменить фото' : 'Загрузить фото'}</button>
+                  <button type="button" onClick={() => formFileRef.current?.click()} className="f-cormorant-sc" style={{ padding: '9px 12px', minHeight: isMobile ? 44 : undefined, fontSize: 13, letterSpacing: '.08em', fontWeight: 600, textTransform: 'uppercase', textAlign: 'center', background: 'var(--gold-muted)', border: 'none', color: 'var(--ink)', cursor: 'pointer' }}>{form.imageUrl ? 'Заменить фото' : 'Загрузить фото'}</button>
                   {form.imageUrl && (
-                    <button type="button" onClick={() => { setForm(f => f && ({ ...f, imageUrl: '' })); pendingFormBlob.current = null; }} className="f-body" style={{ padding: '6px 12px', fontSize: 12, background: 'none', border: '1px solid rgba(192,57,43,.4)', color: '#cf5a4d', cursor: 'pointer' }}>Убрать</button>
+                    <button type="button" onClick={() => { setForm(f => f && ({ ...f, imageUrl: '' })); pendingFormBlob.current = null; }} className="f-body" style={{ padding: '6px 12px', minHeight: isMobile ? 44 : undefined, fontSize: 12, background: 'none', border: '1px solid rgba(192,57,43,.4)', color: '#cf5a4d', cursor: 'pointer' }}>Убрать</button>
                   )}
                 </div>
               </div>
             </div>
             <div>
               <label style={labelStyle}>Название</label>
-              <input style={inputStyle} value={form.name || ''} onChange={e => setForm(f => f && ({ ...f, name: e.target.value }))} />
+              <input style={inputStyle} aria-label="Название травы" value={form.name || ''} onChange={e => setForm(f => f && ({ ...f, name: e.target.value }))} />
             </div>
             <div>
               <label style={labelStyle}>Редкость</label>
-              <select style={inputStyle} value={form.rarity} onChange={e => setForm(f => f && ({ ...f, rarity: e.target.value as Rarity }))}>
+              <select style={inputStyle} aria-label="Редкость" value={form.rarity} onChange={e => setForm(f => f && ({ ...f, rarity: e.target.value as Rarity }))}>
                 {RARITY.map(r => <option key={r} value={r}>{RARITY_LABELS[r]}</option>)}
               </select>
             </div>
             <div>
               <label style={labelStyle}>Описание</label>
-              <textarea rows={4} style={{ ...inputStyle, resize: 'vertical' }} value={form.description || ''} onChange={e => setForm(f => f && ({ ...f, description: e.target.value }))} />
+              <textarea rows={4} style={{ ...inputStyle, resize: 'vertical' }} aria-label="Описание" value={form.description || ''} onChange={e => setForm(f => f && ({ ...f, description: e.target.value }))} />
             </div>
             <div>
               <label style={labelStyle}>Эффекты</label>
-              <select style={inputStyle} value={form.effects || ''} onChange={e => setForm(f => f && ({ ...f, effects: e.target.value }))}>
+              <select style={inputStyle} aria-label="Эффекты" value={form.effects || ''} onChange={e => setForm(f => f && ({ ...f, effects: e.target.value }))}>
                 <option value="">— Не выбрано —</option>
                 <option value="Исцеляющие">Исцеляющие</option>
                 <option value="Усиливающие боевые">Усиливающие боевые</option>
@@ -355,7 +380,7 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh, isMobile = false 
                 {players.map(p => {
                   const on = !!form.access?.includes(p.id);
                   return (
-                    <label key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+                    <label key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 8, minHeight: isMobile ? 44 : undefined, cursor: 'pointer' }}>
                       <input type="checkbox" checked={on}
                         onChange={e => setForm(f => f && ({
                           ...f,
@@ -363,7 +388,7 @@ export function DMPanel({ herbs, onClose, onLogout, onRefresh, isMobile = false 
                             ? [...(f.access || []), p.id]
                             : (f.access || []).filter(id => id !== p.id),
                         }))}
-                        style={{ width: 17, height: 17, accentColor: 'var(--gold-muted)' }} />
+                        style={{ width: isMobile ? 22 : 17, height: isMobile ? 22 : 17, accentColor: 'var(--gold-muted)' }} />
                       <span className="f-body" style={{ fontSize: 14, color: 'var(--birch)', opacity: .85 }}>{p.name}</span>
                     </label>
                   );

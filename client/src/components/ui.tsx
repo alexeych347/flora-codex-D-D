@@ -148,7 +148,9 @@ export function HerbCard({ herb, onClick, isMobile = false }:
             display: '-webkit-box', WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical', overflow: 'hidden',
           }}>{herb.name}</p>
-          <HeraldicBadge color={color} label={RARITY_LABELS[herb.rarity]} size={15} />
+          <span style={{ display: 'block', whiteSpace: isMobile ? 'nowrap' : undefined }}>
+            <HeraldicBadge color={color} label={RARITY_LABELS[herb.rarity]} size={15} />
+          </span>
         </div>
       </div>
     </button>

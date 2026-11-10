@@ -1,10 +1,10 @@
 import { HairDivider } from './ornaments';
 
 /* — кнопка закрытия (медальон) — */
-export function CloseMedallion({ onClick }: { onClick: () => void }) {
+export function CloseMedallion({ onClick, isMobile = false }: { onClick: () => void; isMobile?: boolean }) {
   return (
     <button onClick={onClick} aria-label="Закрыть" style={{
-      position: 'absolute', top: -18, right: -18, zIndex: 40,
+      position: 'absolute', top: isMobile ? 6 : -18, right: isMobile ? 6 : -18, zIndex: 40,
       width: 46, height: 46, background: '#1A0F00', borderRadius: '50%',
       border: 'none', color: 'var(--gold-muted)',
       boxShadow: '0 4px 16px rgba(0,0,0,.6)',
