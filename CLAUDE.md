@@ -44,6 +44,54 @@ cd client && node_modules/.bin/tsc --noEmit
 
 > `npx tsc` не работает на этой машине из-за конфликта PATH — использовать локальный бинарник.
 
+## Окружение (локальная разработка)
+
+**PostgreSQL локально не установлен.** Бэкенд без базы не поднимается, поэтому проверять вёрстку через реальный `GET /api/herbs` нельзя — вместо этого ответ API мокается в браузере.
+
+### Порядок запуска dev-сервера
+
+```bash
+cd client && npm run dev     # → http://127.0.0.1:5173/
+```
+
+`server.host = '127.0.0.1'` зафиксирован в `vite.config.ts`, поэтому Vite печатает и слушает именно `127.0.0.1` — Playwright открывает адрес без дополнительных флагов. Сервер на :3001 для проверки вёрстки запускать не нужно: запросы на `/api/*` перехватываются моком раньше, чем до прокси доходит дело.
+
+### Мок `GET /api/herbs` через Playwright
+
+Клиент ходит в API через axios (XHR), поэтому патчить `window.fetch` бесполезно — нужен перехват на уровне Playwright. Маршрут регистрируется **до** `page.goto`, одним вызовом `browser_run_code_unsafe`:
+
+```js
+async (page) => {
+  const RAR = ['COMMON', 'UNCOMMON', 'RARE', 'VERY_RARE'];
+  const herbs = Array.from({ length: 10 }, (_, i) => {
+    const base = { id: `h${i}`, sortOrder: i, rarity: RAR[i % 4] };
+    if (i % 3 === 2) return { ...base, isUnlocked: false };   // заглушка
+    return {
+      ...base,
+      isUnlocked: true,
+      name: `Трава ${i + 1}`,
+      latinName: `Herba ${i + 1}`,
+      imageUrl: null,
+      discoveredAt: '2026-05-01',
+      description: 'Описание травы для проверки вёрстки.',
+      properties: ['свойство A', 'свойство B'],
+      effects: 'Эффект для проверки вёрстки.',
+    };
+  });
+  await page.route('**/api/herbs', route =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(herbs) })
+  );
+  await page.goto('http://127.0.0.1:5173/', { waitUntil: 'networkidle' });
+}
+```
+
+Детали:
+- Без токена в `localStorage` `useAuth` не дёргает `/api/auth/verify`, так что для анонимного просмотра книги достаточно замокать один `GET /api/herbs`.
+- Форма объектов — `Herb` / `LockedHerbStub` из `types/index.ts`; заглушка это ровно 4 поля (`id`, `isUnlocked: false`, `sortOrder`, `rarity`).
+- 10 трав дают 2 разворота; на разворот идёт 8 трав.
+- Кнопки перелистывания в `Book.tsx` без `aria-label` (`NavShield` с метками «Вперёд»/«Назад» из `ornaments.tsx` в книге не используется) — кликать по ним проще позиционно: «вперёд» это последняя `button` на странице.
+- Скриншоты — `browser_take_screenshot` **без** `filename`, иначе файл упадёт в репозиторий; ширины 375 px и 1440 px.
+
 ## Architecture
 
 ### Data visibility pattern (критично)
