@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-10T00:00:00.000Z",
+  "title": "Design System: Flora Codex",
+  "extensions": {
+    "colorMeta": {
+      "gold-muted": {
+        "role": "primary",
+        "displayName": "Приглушённое золото",
+        "canonical": "oklch(62% 0.13 85)",
+        "tonalRamp": ["oklch(15% 0.03 85)", "oklch(26% 0.06 85)", "oklch(37% 0.09 85)", "oklch(48% 0.11 85)", "oklch(62% 0.13 85)", "oklch(74% 0.10 85)", "oklch(86% 0.06 85)", "oklch(95% 0.02 85)"]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Чернила",
+        "canonical": "oklch(13% 0.02 70)",
+        "tonalRamp": ["oklch(13% 0.02 70)", "oklch(22% 0.03 70)", "oklch(32% 0.03 70)", "oklch(43% 0.03 70)", "oklch(55% 0.02 70)", "oklch(68% 0.02 70)", "oklch(82% 0.01 70)", "oklch(95% 0.01 70)"]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Мягкие чернила",
+        "canonical": "oklch(27% 0.03 60)"
+      },
+      "parchment": {
+        "role": "neutral",
+        "displayName": "Пергамент",
+        "canonical": "oklch(92% 0.05 90)",
+        "tonalRamp": ["oklch(18% 0.02 90)", "oklch(30% 0.03 90)", "oklch(43% 0.04 90)", "oklch(56% 0.05 90)", "oklch(68% 0.06 90)", "oklch(80% 0.06 90)", "oklch(92% 0.05 90)", "oklch(97% 0.02 90)"]
+      },
+      "parchment-dark": {
+        "role": "neutral",
+        "displayName": "Тёмный пергамент",
+        "canonical": "oklch(87% 0.06 90)"
+      },
+      "birch": {
+        "role": "neutral",
+        "displayName": "Береста",
+        "canonical": "oklch(95% 0.01 85)"
+      },
+      "oxblood": {
+        "role": "secondary",
+        "displayName": "Киноварь",
+        "canonical": "oklch(32% 0.12 30)",
+        "tonalRamp": ["oklch(15% 0.06 30)", "oklch(23% 0.09 30)", "oklch(32% 0.12 30)", "oklch(43% 0.14 30)", "oklch(55% 0.15 30)", "oklch(68% 0.12 30)", "oklch(82% 0.07 30)", "oklch(94% 0.03 30)"]
+      },
+      "vermilion": {
+        "role": "secondary",
+        "displayName": "Алая звезда",
+        "canonical": "oklch(37% 0.15 28)"
+      },
+      "forest-deep": {
+        "role": "secondary",
+        "displayName": "Глухая зелень",
+        "canonical": "oklch(25% 0.04 155)"
+      },
+      "forest-stem": {
+        "role": "secondary",
+        "displayName": "Стебель",
+        "canonical": "oklch(31% 0.06 158)"
+      },
+      "slate": {
+        "role": "tertiary",
+        "displayName": "Синь",
+        "canonical": "oklch(47% 0.03 240)"
+      },
+      "cobalt": {
+        "role": "tertiary",
+        "displayName": "Кобальт",
+        "canonical": "oklch(43% 0.08 250)"
+      },
+      "night": {
+        "role": "neutral",
+        "displayName": "Ночь",
+        "canonical": "oklch(10% 0.01 70)"
+      },
+      "night-bar": {
+        "role": "neutral",
+        "displayName": "Панель",
+        "canonical": "rgba(9,13,21,0.97)"
+      },
+      "r-common": {
+        "role": "tertiary",
+        "displayName": "Зелёный камень",
+        "canonical": "oklch(63% 0.02 145)",
+        "tonalRamp": ["oklch(18% 0.01 145)", "oklch(29% 0.02 145)", "oklch(40% 0.02 145)", "oklch(51% 0.02 145)", "oklch(63% 0.02 145)", "oklch(75% 0.02 145)", "oklch(86% 0.01 145)", "oklch(95% 0.01 145)"]
+      },
+      "r-uncommon": {
+        "role": "tertiary",
+        "displayName": "Травяная зелень",
+        "canonical": "oklch(50% 0.08 150)",
+        "tonalRamp": ["oklch(16% 0.03 150)", "oklch(26% 0.05 150)", "oklch(38% 0.07 150)", "oklch(50% 0.08 150)", "oklch(62% 0.08 150)", "oklch(74% 0.06 150)", "oklch(86% 0.04 150)", "oklch(95% 0.01 150)"]
+      },
+      "r-rare": {
+        "role": "tertiary",
+        "displayName": "Синь редкого",
+        "canonical": "oklch(43% 0.08 250)",
+        "tonalRamp": ["oklch(16% 0.03 250)", "oklch(25% 0.05 250)", "oklch(34% 0.07 250)", "oklch(43% 0.08 250)", "oklch(56% 0.08 250)", "oklch(70% 0.06 250)", "oklch(84% 0.03 250)", "oklch(95% 0.01 250)"]
+      },
+      "r-veryrare": {
+        "role": "tertiary",
+        "displayName": "Пурпур очень редкого",
+        "canonical": "oklch(45% 0.16 310)",
+        "tonalRamp": ["oklch(17% 0.06 310)", "oklch(26% 0.10 310)", "oklch(35% 0.13 310)", "oklch(45% 0.16 310)", "oklch(57% 0.15 310)", "oklch(70% 0.11 310)", "oklch(84% 0.06 310)", "oklch(95% 0.02 310)"]
+      },
+      "gold-legacy": {
+        "role": "neutral",
+        "displayName": "Старое золото (долг)",
+        "canonical": "oklch(72% 0.11 90)"
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Только обложка: «КОДЕКС» / «ТРАВ» двумя строками через киноварную звезду." },
+      "headline": { "displayName": "Headline", "purpose": "Название травы в модальном окне." },
+      "title": { "displayName": "Title", "purpose": "Название травы на карточке, обрезается по двум строкам." },
+      "section": { "displayName": "Section", "purpose": "«ОПИСАНИЕ», «ЭФФЕКТЫ» — всегда с волосным делителем под собой." },
+      "label": { "displayName": "Label", "purpose": "Колонтитулы, логотип, кнопки хрома. Капитель только с разрядкой от 0.14em." },
+      "body": { "displayName": "Body", "purpose": "Описание травы: по ширине, с переносами, первый абзац с буквицей." },
+      "gloss": { "displayName": "Gloss", "purpose": "Подписи, латынь, «Не изучено», внутриигровые реплики книги." }
+    },
+    "shadows": [
+      { "name": "card-rings", "value": "inset 0 0 0 1px {rarity}55, inset 0 0 0 2px rgba(255,250,238,.45), inset 0 0 0 2.5px {rarity}AA", "purpose": "Тройное кольцо в цвет редкости со светлым просветом — оправа карточки травы." },
+      { "name": "paper-rest", "value": "0 2px 8px rgba(60,40,15,.14)", "purpose": "Единственная мягкая тень внутри страницы, под карточкой травы." },
+      { "name": "book-on-table", "value": "0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.15), 8px 8px 30px rgba(0,0,0,0.5)", "purpose": "Книга, лежащая на тёмном столе." },
+      { "name": "modal-above", "value": "0 50px 100px rgba(0,0,0,.8), inset 0 0 0 1px rgba(26,15,0,.15)", "purpose": "Модальное окно травы над книгой." },
+      { "name": "medallion", "value": "0 4px 16px rgba(0,0,0,.6)", "purpose": "Кнопка закрытия, вынесенная за угол модалки." },
+      { "name": "plate-frame", "value": "0 0 0 1.5px var(--ink), 0 0 0 5px {rarity}, 0 0 0 6.5px var(--ink), 0 10px 26px rgba(0,0,0,.4)", "purpose": "Оправа иллюстрации в модалке: чернила → цвет редкости → чернила." }
+    ],
+    "motion": [
+      { "name": "page-enter", "value": "0.45s cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Вход разворота: слайд x ±100% → 0 с проявлением." },
+      { "name": "page-exit", "value": "0.35s cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Уход разворота в противоположную сторону." },
+      { "name": "spread-enter", "value": "0.35s ease-out", "purpose": "Проявление страницы с лёгким масштабом 0.98 → 1." },
+      { "name": "overlay-in", "value": "0.2s ease-out", "purpose": "Затемнение оверлея под модалкой." },
+      { "name": "modal-pop", "value": "0.28s cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Появление модалки: 0.94 → 1 со сдвигом вверх на 8px." },
+      { "name": "panel-in", "value": "0.25s ease-out", "purpose": "Выезд панели мастера справа." },
+      { "name": "hover-lift", "value": "0.18s ease", "purpose": "Подъём карточки травы на 3px с осветлением 1.04." },
+      { "name": "medallion-turn", "value": "0.25s", "purpose": "Поворот кнопки закрытия на 90° при наведении." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "767px" },
+      { "name": "md", "value": "768px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Карточка травы",
+      "kind": "card",
+      "refersTo": "herb-card",
+      "description": "Изученная трава на развороте: иллюстрация в оправе, волосной делитель, название в две строки, гербовый щит редкости.",
+      "html": "<button class=\"ds-herb-card\"><div class=\"ds-herb-card__plate\"></div><svg class=\"ds-herb-card__rule\" viewBox=\"0 0 200 11\" preserveAspectRatio=\"none\"><line x1=\"2\" y1=\"5.5\" x2=\"86\" y2=\"5.5\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".55\"/><line x1=\"114\" y1=\"5.5\" x2=\"198\" y2=\"5.5\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".55\"/><path d=\"M100,0.5 l5,5 l-5,5 l-5,-5 Z\" fill=\"currentColor\" opacity=\".75\"/></svg><div class=\"ds-herb-card__foot\"><p class=\"ds-herb-card__name\">Серебристая Мята</p><span class=\"ds-badge\"><svg viewBox=\"0 0 16 20\" width=\"15\" height=\"19\"><path d=\"M1,1 H15 V12 C15,16 10,18 8,19 C6,18 1,16 1,12 Z\" fill=\"currentColor\" stroke=\"#1C1208\" stroke-width=\"1\"/></svg><span class=\"ds-badge__label\">НЕОБЫЧНАЯ</span></span></div></button>",
+      "css": ".ds-herb-card { --rarity: #4A7C59; position: relative; display: flex; flex-direction: column; width: 220px; height: 260px; padding: 0; text-align: left; background: rgba(255,250,238,.45); border: none; cursor: pointer; overflow: hidden; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rarity) 33%, transparent), inset 0 0 0 2px rgba(255,250,238,.45), inset 0 0 0 2.5px color-mix(in srgb, var(--rarity) 67%, transparent), 0 2px 8px rgba(60,40,15,.14); transition: transform .18s ease, filter .18s ease; } .ds-herb-card:hover { transform: translateY(-3px); filter: brightness(1.04); } .ds-herb-card:focus-visible { outline: 2px solid var(--gold-muted, #B8860B); outline-offset: 2px; } .ds-herb-card__plate { flex: 1; min-height: 0; margin: 8px 8px 0; background: linear-gradient(160deg, color-mix(in srgb, var(--rarity) 8%, transparent) 0%, color-mix(in srgb, var(--rarity) 2%, transparent) 100%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rarity) 60%, transparent); } .ds-herb-card__rule { display: block; width: calc(100% - 24px); height: 11px; margin: 5px 12px 3px; color: var(--rarity); } .ds-herb-card__foot { flex-shrink: 0; padding: 1px 11px 9px; } .ds-herb-card__name { margin: 0 0 6px; font-family: 'Philosopher', serif; font-weight: 700; font-size: 17.5px; line-height: 1.12; height: 2.24em; color: var(--ink, #1C1208); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; } .ds-badge { display: inline-flex; align-items: center; gap: 7px; color: var(--rarity); } .ds-badge__label { font-family: 'Cormorant SC', serif; font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Закрытая карточка",
+      "kind": "card",
+      "refersTo": "herb-card-locked",
+      "description": "Трава без доступа: редкость видна, всё остальное скрыто. Впечатана в страницу — без мягкой тени.",
+      "html": "<div class=\"ds-herb-locked\"><svg width=\"78\" height=\"78\" viewBox=\"0 0 82 82\"><circle cx=\"41\" cy=\"41\" r=\"36\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-dasharray=\"3.5 4.5\" opacity=\".42\"/><rect x=\"28\" y=\"38\" width=\"26\" height=\"18\" rx=\"3\" fill=\"currentColor\" fill-opacity=\".13\" stroke=\"currentColor\" stroke-width=\"1.7\" opacity=\".8\"/><path d=\"M33.5,38 v-6 a7.5,7.5 0 0 1 15,0 v6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" opacity=\".8\"/><circle cx=\"41\" cy=\"47\" r=\"2.8\" fill=\"currentColor\" opacity=\".8\"/><line x1=\"41\" y1=\"48.5\" x2=\"41\" y2=\"52.5\" stroke=\"currentColor\" stroke-width=\"1.6\" opacity=\".72\"/><path d=\"M77,37.5 l3.5,3.5 l-3.5,3.5 l-3.5,-3.5 Z\" fill=\"currentColor\" opacity=\".46\"/><path d=\"M41,1.5 l3.5,3.5 l-3.5,3.5 l-3.5,-3.5 Z\" fill=\"currentColor\" opacity=\".46\"/><path d=\"M5,37.5 l3.5,3.5 l-3.5,3.5 l-3.5,-3.5 Z\" fill=\"currentColor\" opacity=\".46\"/><path d=\"M41,73.5 l3.5,3.5 l-3.5,3.5 l-3.5,-3.5 Z\" fill=\"currentColor\" opacity=\".46\"/></svg><p class=\"ds-herb-locked__label\">Не изучено</p></div>",
+      "css": ".ds-herb-locked { --rarity: #7B3FA0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 11px; width: 220px; height: 260px; padding: 14px 10px; color: var(--rarity); background: linear-gradient(150deg, color-mix(in srgb, var(--rarity) 7%, transparent) 0%, color-mix(in srgb, var(--rarity) 2%, transparent) 100%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rarity) 33%, transparent), inset 0 0 0 2px rgba(255,250,238,.4), inset 0 0 0 2.5px color-mix(in srgb, var(--rarity) 53%, transparent); } .ds-herb-locked__label { margin: 0; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; text-align: center; color: var(--ink-soft, #3D2B1F); opacity: .6; }"
+    },
+    {
+      "name": "Гербовый щит редкости",
+      "kind": "chip",
+      "refersTo": "badge-rarity",
+      "description": "Единственная форма подписи редкости. Капсул и чипов с радиусом в системе нет.",
+      "html": "<span class=\"ds-shield\"><svg viewBox=\"0 0 16 20\" width=\"22\" height=\"27\"><path d=\"M1,1 H15 V12 C15,16 10,18 8,19 C6,18 1,16 1,12 Z\" fill=\"currentColor\" stroke=\"#1C1208\" stroke-width=\"1\"/><path d=\"M3,3 H13 V11.6 C13,14.6 9.2,16.3 8,17 C6.8,16.3 3,14.6 3,11.6 Z\" fill=\"none\" stroke=\"#F4E4BC\" stroke-width=\".8\" opacity=\".55\"/></svg><span class=\"ds-shield__label\">ОЧЕНЬ РЕДКАЯ</span></span>",
+      "css": ".ds-shield { --rarity: #7B3FA0; display: inline-flex; align-items: center; gap: 8px; color: var(--rarity); } .ds-shield svg { display: block; flex-shrink: 0; } .ds-shield__label { font-family: 'Cormorant SC', serif; font-size: 14px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Заголовок секции",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Капитель вразрядку с волосным делителем в цвет редкости под ней. Используется в модалке травы.",
+      "html": "<div class=\"ds-section\"><h3 class=\"ds-section__title\">ОПИСАНИЕ</h3><svg class=\"ds-section__rule\" width=\"150\" height=\"11\" viewBox=\"0 0 200 11\" preserveAspectRatio=\"none\"><line x1=\"2\" y1=\"5.5\" x2=\"86\" y2=\"5.5\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".55\"/><line x1=\"114\" y1=\"5.5\" x2=\"198\" y2=\"5.5\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".55\"/><path d=\"M100,0.5 l5,5 l-5,5 l-5,-5 Z\" fill=\"currentColor\" opacity=\".75\"/><circle cx=\"100\" cy=\"5.5\" r=\"1.6\" fill=\"#F4E4BC\"/></svg></div>",
+      "css": ".ds-section { --rarity: #3A5F8A; margin-bottom: 13px; } .ds-section__title { margin: 0; font-family: 'Cormorant SC', serif; font-size: 17px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--ink, #1C1208); } .ds-section__rule { display: block; margin-top: 6px; color: var(--rarity); opacity: .85; }"
+    },
+    {
+      "name": "Кнопка хрома",
+      "kind": "button",
+      "refersTo": "button-chrome",
+      "description": "«Войти» и «Панель Мастера» в верхней панели: прямоугольник без радиуса, капитель вразрядку, приглушённое золото.",
+      "html": "<button class=\"ds-btn-chrome\">Войти</button>",
+      "css": ".ds-btn-chrome { padding: 6px 13px; font-family: 'Cormorant SC', serif; font-size: 12.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-muted, #B8860B); background: rgba(184,134,11,.10); border: 1px solid rgba(184,134,11,.4); border-radius: 0; cursor: pointer; white-space: nowrap; transition: background .2s, border-color .2s; } .ds-btn-chrome:hover { background: rgba(184,134,11,.18); border-color: rgba(184,134,11,.6); } .ds-btn-chrome:focus-visible { outline: 2px solid var(--gold-muted, #B8860B); outline-offset: 2px; }"
+    },
+    {
+      "name": "Навигационная стрелка (долг)",
+      "kind": "nav",
+      "refersTo": "nav-arrow",
+      "description": "Перелистывание разворота. Единственный элемент с радиусом рядом с книгой и на старом золоте — самое заметное место технического долга.",
+      "html": "<button class=\"ds-nav-arrow\" aria-label=\"Вперёд\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M9 18l6-6-6-6\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></button>",
+      "css": ".ds-nav-arrow { display: flex; align-items: center; justify-content: center; width: 52px; height: 80px; color: #C9A84C; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.35); border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.3); cursor: pointer; transition: background .2s, border-color .2s; } .ds-nav-arrow:hover { background: rgba(201,168,76,0.2); } .ds-nav-arrow:focus-visible { outline: 2px solid #C9A84C; outline-offset: 2px; } .ds-nav-arrow:disabled { color: transparent; background: transparent; border-color: transparent; box-shadow: none; cursor: default; }"
+    },
+    {
+      "name": "Поисковое поле",
+      "kind": "input",
+      "refersTo": "search-input",
+      "description": "Поиск по открытым травам в верхней панели. Пергаментное поле без радиуса, курсивный плейсхолдер.",
+      "html": "<div class=\"ds-search\"><svg class=\"ds-search__icon\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\"><circle cx=\"11\" cy=\"11\" r=\"8\" stroke=\"currentColor\" stroke-width=\"2\"/><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\" stroke=\"currentColor\" stroke-width=\"2\"/></svg><input class=\"ds-search__field\" type=\"text\" placeholder=\"Найти траву...\"></div>",
+      "css": ".ds-search { position: relative; display: flex; align-items: center; width: 320px; } .ds-search__icon { position: absolute; left: 12px; color: #C9A84C; opacity: .7; pointer-events: none; } .ds-search__field { width: 100%; padding: 8px 16px 8px 36px; font-family: 'EB Garamond', serif; font-size: 14px; color: var(--ink, #1C1208); background: rgba(244,228,188,0.9); border: 1px solid rgba(201,168,76,.38); border-radius: 0; } .ds-search__field::placeholder { color: var(--ink-soft, #3D2B1F); opacity: .45; font-style: italic; } .ds-search__field:focus { outline: none; border-color: rgba(201,168,76,.8); }"
+    },
+    {
+      "name": "Медальон закрытия",
+      "kind": "button",
+      "refersTo": "close-medallion",
+      "description": "Единственный круг в системе. Вынесен на −18px за угол модалки, при наведении поворачивается на 90°.",
+      "html": "<button class=\"ds-close-medallion\" aria-label=\"Закрыть\"><svg class=\"ds-close-medallion__ring\" width=\"46\" height=\"46\" viewBox=\"0 0 46 46\"><circle cx=\"23\" cy=\"23\" r=\"21\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><circle cx=\"23\" cy=\"23\" r=\"15\" fill=\"none\" stroke=\"currentColor\" stroke-width=\".7\" opacity=\".5\"/><path d=\"M44,20 l3,3 l-3,3 l-3,-3 Z\" fill=\"currentColor\"/><path d=\"M23,-1 l3,3 l-3,3 l-3,-3 Z\" fill=\"currentColor\"/><path d=\"M2,20 l3,3 l-3,3 l-3,-3 Z\" fill=\"currentColor\"/><path d=\"M23,41 l3,3 l-3,3 l-3,-3 Z\" fill=\"currentColor\"/></svg><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\"><path d=\"M3,3 L13,13 M13,3 L3,13\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg></button>",
+      "css": ".ds-close-medallion { position: relative; display: grid; place-items: center; width: 46px; height: 46px; color: var(--gold-muted, #B8860B); background: #1A0F00; border: none; border-radius: 50%; box-shadow: 0 4px 16px rgba(0,0,0,.6); cursor: pointer; transition: transform .25s; } .ds-close-medallion:hover { transform: rotate(90deg); } .ds-close-medallion:focus-visible { outline: 2px solid var(--gold-muted, #B8860B); outline-offset: 3px; } .ds-close-medallion__ring { position: absolute; inset: 0; overflow: visible; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Иллюминированный травник",
+    "overview": "Книга, переписанная от руки и украшенная так, как украшали ботанические атласы до эпохи печати: пергаментный разворот, буквица в начале описания, золотые волосные делители, латынь курсивом, гербовый щит вместо служебного бейджа. Интерфейс не изображает книгу — он ею является: страница имеет край, переплёт имеет толщину, редкость травы носит форму геральдического знака, а не цветной таблетки.\n\nДекор здесь структурный, а не фоновый. Главный приём — вложенные канты: рамка страницы собрана из семи слоёв inset-теней в строгом порядке чернь → синь → золото → киноварь → золото → зелень → золото. Этот порядок повторяется на обложке (PageBorder), на разворотах (SpreadBorder, тоньше) и в модальном окне (ModalFrame). Он и есть подпись системы: любой новый контейнер, претендующий на статус «страницы», собирается по той же последовательности.\n\nПлотность высокая и намеренная: на странице четыре карточки сеткой 2×2, легенда редкости, шапка-колонтитул и рамка — пустоты почти нет, как в настоящем развороте. Цвет работает редко и по делу: пергамент и чернила несут всю массу, золото держит орнамент, а насыщенные цвета появляются только там, где говорят о редкости травы.",
+    "keyCharacteristics": [
+      "Многослойные вложенные канты как единственный способ очертить страницу",
+      "Пергамент + чернила как базовая пара; золото — только орнамент и типографика",
+      "Цвет редкости — единственная яркая краска на странице",
+      "Прямые углы: радиусов в книге нет вообще",
+      "Кириллическая антиква Philosopher и капитель Cormorant SC вместо латинских декоративных шрифтов",
+      "Иллюстрация всегда в оправе: рамка из чернил, цвета редкости и снова чернил"
+    ],
+    "rules": [
+      { "name": "The Rarity-Only Rule", "body": "Насыщенный цвет на странице означает редкость травы и ничего больше. Статусы, подсветки, выделения и состояния решаются золотом, чернилами и прозрачностью — не новой краской.", "section": "colors" },
+      { "name": "The Legacy Gold Rule", "body": "gold-legacy (#C9A84C) — технический долг, а не токен. Новый код пишется только на gold-muted (#B8860B). Существующие места не переводятся заодно с другой задачей: это отдельная правка. Долг живёт в Book.tsx (верхняя панель, стрелки, счётчик), SearchBar.tsx, App.tsx (экраны загрузки и ошибки) и в tailwind.config.js.", "section": "colors" },
+      { "name": "The Seven-Band Rule", "body": "Рамка «страницы» — всегда семь слоёв в порядке чернь → синь → золото → киноварь → золото → зелень → золото. Меняются только толщины и отступы (PageBorder — щедрые, SpreadBorder — вдвое тоньше). Порядок не меняется и слои не выбрасываются.", "section": "colors" },
+      { "name": "The Drop-Cap Rule", "body": "Буквица (.drop-cap, Philosopher 2.6em, золотом) ставится только на первый абзац описания травы. Второй буквицы в системе не бывает.", "section": "typography" },
+      { "name": "The Voice-Not-Size Rule", "body": "Гарнитура выбирается по роли текста, а не по его размеру. Надпись остаётся капителью, даже когда она крупная; проза остаётся гарамоном, даже когда она мелкая.", "section": "typography" },
+      { "name": "The Book-On-Any-Screen Rule", "body": "Книга остаётся книгой на любой ширине: рамки, переплёт (там, где он есть) и перелистывание сохраняются. Схлопывание разворота в одну страницу — это предел допустимого упрощения, не начало отказа от метафоры.", "section": "layout" }
+    ],
+    "dos": [
+      "Do собирать любой новый «страничный» контейнер по семислойной рамке в каноническом порядке (чернь → синь → золото → киноварь → золото → зелень → золото), меняя только толщины.",
+      "Do брать золото только из gold-muted (#B8860B).",
+      "Do давать цвету редкости все три его места сразу: кант контейнера, делитель и щит.",
+      "Do держать прямые углы. Радиус в книге — ошибка.",
+      "Do ставить капитель только с разрядкой от 0.14em.",
+      "Do рисовать рамки кольцами inset-тени, а не border — так они вкладываются без роста геометрии.",
+      "Do резервировать место под отсутствующие элементы (EmptySlot), а не схлопывать сетку."
+    ],
+    "donts": [
+      "Don't вводить новый насыщенный цвет: яркая краска в системе означает редкость травы.",
+      "Don't использовать gold-legacy (#C9A84C), Cinzel Decorative и Tailwind-токены rarity.legendary в новом коде — это остатки первого поколения.",
+      "Don't подменять гербовый щит редкости капсулой, чипом или цветной таблеткой.",
+      "Don't ставить вторую буквицу: она принадлежит первому абзацу описания и только ему.",
+      "Don't отказываться от метафоры книги на узких экранах — разворот схлопывается в страницу, но перелистывание и рамки остаются.",
+      "Don't открывать редкость закрытой травы иначе, чем сейчас: заглушка показывает редкость и скрывает всё остальное."
+    ]
+  }
+}
