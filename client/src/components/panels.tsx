@@ -4,7 +4,12 @@ import { HairDivider } from './ornaments';
 export function CloseMedallion({ onClick, isMobile = false }: { onClick: () => void; isMobile?: boolean }) {
   return (
     <button onClick={onClick} aria-label="Закрыть" style={{
-      position: 'absolute', top: isMobile ? 6 : -18, right: isMobile ? 6 : -18, zIndex: 40,
+      // На мобильном медальон стоит в потоке шапки окна: снаружи, как на
+      // десктопе, он лёг бы на полосы рамки
+      position: isMobile ? 'relative' : 'absolute',
+      top: isMobile ? undefined : -18,
+      right: isMobile ? undefined : -18,
+      zIndex: 40, flexShrink: 0,
       width: 46, height: 46, background: '#1A0F00', borderRadius: '50%',
       border: 'none', color: 'var(--gold-muted)',
       boxShadow: '0 4px 16px rgba(0,0,0,.6)',
