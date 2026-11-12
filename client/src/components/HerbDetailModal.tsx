@@ -198,10 +198,12 @@ function HerbPages({ herb, onClose, color, imageUrl }:
               transform: `translateY(${-offset}px)`,
               transition: 'transform .32s cubic-bezier(.4,0,.2,1)',
             }}>
-              {/* Блок 1 — иллюстрация, название, редкость. Не делится. */}
+              {/* Блок 1 — иллюстрация, название, редкость. Не делится.
+                  paddingTop — чтобы окно страницы (overflow: hidden) не срезало
+                  внешние кольца плиты (6.5 px) и её тень. */}
               <div data-block data-atomic style={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center',
-                gap: 13, paddingBottom: 22,
+                gap: 13, paddingTop: 14, paddingBottom: 22,
               }}>
                 <div style={{
                   width: 196, maxWidth: '100%', aspectRatio: '1', flexShrink: 0,
