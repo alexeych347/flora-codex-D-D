@@ -1,4 +1,4 @@
-import { HerbOrStub, isFullHerb, RARITY, RARITY_COLORS, RARITY_LABELS, Rarity } from '../types';
+import { HerbOrStub, isFullHerb, RARITY_COLORS, RARITY_LABELS, Rarity } from '../types';
 import {
   leafPath, HairDivider, FloralDivider, CornerOrnament, SlavicFlower,
   HeraldicBadge, SpreadBorder, PageBorder,
@@ -105,29 +105,6 @@ export function PageHeader() {
   );
 }
 
-/* — легенда редкости — */
-export function RarityLegend() {
-  return (
-    <div style={{ flexShrink: 0, padding: '12px 8px 16px' }}>
-      <div style={{ marginBottom: 9, color: 'var(--gold-muted)', opacity: .85, display: 'flex', justifyContent: 'center' }}>
-        <HairDivider width={210} flip />
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'auto auto', justifyContent: 'center', gap: '5px 26px' }}>
-        {RARITY.map(r => (
-          <span key={r} style={{ display: 'inline-flex', alignItems: 'center', gap: 7 }}>
-            <svg width="11" height="14" viewBox="0 0 12 15" style={{ flexShrink: 0 }}>
-              <path d="M6,0 l6,7.5 l-6,7.5 l-6,-7.5 Z" fill={RARITY_COLORS[r]} stroke="var(--ink)" strokeWidth=".8" />
-            </svg>
-            <span className="f-italic" style={{ color: 'var(--ink-soft)', fontSize: 15, whiteSpace: 'nowrap' }}>
-              {RARITY_LABELS[r]}
-            </span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 /* — карточка изученной травы — */
 export function HerbCard({ herb, onClick, isMobile = false }:
   { herb: HerbOrStub & { isUnlocked: true }; onClick: () => void; isMobile?: boolean }) {
@@ -164,39 +141,39 @@ export function HerbCard({ herb, onClick, isMobile = false }:
               ? <img src={herb.imageUrl} alt={herb.name}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
               : <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <PlantGlyph rarity={herb.rarity} size={isMobile ? 62 : 94} />
+                  <PlantGlyph rarity={herb.rarity} size={isMobile ? 88 : 128} />
                 </div>}
           </div>
         </div>
 
-        {/* На мобильном делителя нет: высота отдана картинке */}
-        {!isMobile && (
-          <div style={{ margin: '5px 12px 3px', color, display: 'flex', justifyContent: 'center' }}>
-            <HairDivider width="100%" color={color} />
-          </div>
-        )}
+        {/* Делитель есть и на мобильном: место освободилось после снятия легенды,
+            а цвет редкости должен получить все три носителя (кант, делитель, щит) */}
+        <div style={{ margin: isMobile ? '4px 9px 2px' : '5px 12px 3px', color, display: 'flex', justifyContent: 'center' }}>
+          <HairDivider width="100%" color={color} />
+        </div>
 
-        <div style={{ flexShrink: 0, padding: isMobile ? '1px 8px 9px' : '1px 11px 9px' }}>
-          <p className="f-philosopher" style={{
-            color: 'var(--ink)', fontSize: 17.5, fontWeight: 700,
-            lineHeight: 1.12, height: '2.24em', marginBottom: 6,
-            overflowWrap: isMobile ? 'anywhere' : undefined,
-            display: '-webkit-box', WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical', overflow: 'hidden',
-          }}>{herb.name}</p>
-          {/* На мобильном редкость показывает только щит; подпись уходит,
-              имя редкости остаётся для скринридера. Расшифровка цветов — в легенде страницы. */}
-          <span
-            style={{ display: 'block', whiteSpace: isMobile ? 'nowrap' : undefined }}
-            {...(isMobile ? { role: 'img', 'aria-label': `Редкость: ${RARITY_LABELS[herb.rarity]}` } : {})}
-          >
-            <HeraldicBadge
-              color={color}
-              label={RARITY_LABELS[herb.rarity]}
-              size={isMobile ? 19 : 15}
-              withLabel={!isMobile}
-            />
-          </span>
+        <div style={{ flexShrink: 0, padding: isMobile ? '1px 8px 9px' : '1px 11px 9px', textAlign: 'center' }}>
+          {/* Зарезервированная высота в две строки держит плиты одного размера
+              через весь ряд; текст прижат книзу, чтобы у однострочного имени
+              не висело пустой строки между ним и щитом. */}
+          <div style={{ height: '2.24em', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', marginBottom: 6 }}>
+            <p className="f-philosopher" lang="ru" style={{
+              color: 'var(--ink)', fontSize: 17.5, fontWeight: 700,
+              lineHeight: 1.12, hyphens: 'auto', overflowWrap: 'break-word',
+              display: '-webkit-box', WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical', overflow: 'hidden',
+            }}>{herb.name}</p>
+          </div>
+          {/* Кегль подписи на мобильном плавающий: «ОЧЕНЬ РЕДКАЯ» при 11px
+              занимает 119.7px и на 360 не влезает в колонку (115.3px) — nowrap
+              при этом ещё и раздвигает сетку, делая карточки разной ширины.
+              min() держит 11px там, где есть место, и ужимает на узких. */}
+          <HeraldicBadge
+            color={color}
+            label={RARITY_LABELS[herb.rarity]}
+            size={isMobile ? 14 : 15}
+            labelSize={isMobile ? 'min(11px, 2.7vw)' : 13}
+          />
         </div>
       </div>
     </button>
@@ -204,8 +181,11 @@ export function HerbCard({ herb, onClick, isMobile = false }:
 }
 
 /* — заблокированная карточка — */
-export function LockedHerbCard({ herb }: { herb: HerbOrStub }) {
+export function LockedHerbCard({ herb, isMobile = false }: { herb: HerbOrStub; isMobile?: boolean }) {
   const color = RARITY_COLORS[herb.rarity];
+  // Замок занимает ту же долю карточки, что глиф-заглушка внутри плиты
+  // открытой травы, — закрытая карточка стоит с ней в одном ряду.
+  const lock = isMobile ? 88 : 128;
   return (
     <div style={{
       position: 'relative', height: '100%',
@@ -219,7 +199,7 @@ export function LockedHerbCard({ herb }: { herb: HerbOrStub }) {
         `inset 0 0 0 2.5px ${color}88`,
       ].join(','),
     }}>
-      <svg width="78" height="78" viewBox="0 0 82 82" style={{ display: 'block' }}>
+      <svg width={lock} height={lock} viewBox="0 0 82 82" style={{ display: 'block' }}>
         <circle cx="41" cy="41" r="36" fill="none" stroke={color} strokeWidth="1.1" strokeDasharray="3.5 4.5" opacity=".42" />
         <circle cx="41" cy="41" r="27" fill={`${color}10`} stroke="none" />
         <rect x="28" y="38" width="26" height="18" rx="3" fill={`${color}22`} stroke={color} strokeWidth="1.7" opacity=".8" />
@@ -231,7 +211,8 @@ export function LockedHerbCard({ herb }: { herb: HerbOrStub }) {
           return <path key={i} d={`M${x},${y - 3.5} l3.5,3.5 l-3.5,3.5 l-3.5,-3.5 Z`} fill={color} opacity=".46" />;
         })}
       </svg>
-      <p className="f-italic" style={{ color: 'var(--ink-soft)', fontSize: 15, opacity: .6, textAlign: 'center' }}>Не изучено</p>
+      {/* Без opacity: при .6 подпись давала 3.46:1 — ниже порога. Чернила в полную силу — 10.6:1 */}
+      <p className="f-italic" style={{ color: 'var(--ink-soft)', fontSize: 15, textAlign: 'center' }}>Не изучено</p>
     </div>
   );
 }
@@ -262,11 +243,10 @@ export function HerbGridPage({ herbs, onHerbClick, isMobile = false }:
           {[0, 1, 2, 3].map(i => {
             const herb = herbs[i];
             if (!herb) return <EmptySlot key={i} />;
-            if (!isFullHerb(herb)) return <LockedHerbCard key={herb.id} herb={herb} />;
+            if (!isFullHerb(herb)) return <LockedHerbCard key={herb.id} herb={herb} isMobile={isMobile} />;
             return <HerbCard key={herb.id} herb={herb} onClick={() => onHerbClick(herb)} isMobile={isMobile} />;
           })}
         </div>
-        <RarityLegend />
       </div>
     </div>
   );

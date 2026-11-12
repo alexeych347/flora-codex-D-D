@@ -244,8 +244,8 @@ export function MedallionFrame({ size = 250, color = 'var(--gold-muted)', glow =
 }
 
 /* ── Гербовый щит ── */
-export function HeraldicBadge({ color = 'var(--gold-muted)', label, size = 18, withLabel = true, title }:
-  { color?: string; label: string; size?: number; withLabel?: boolean; title?: string }) {
+export function HeraldicBadge({ color = 'var(--gold-muted)', label, size = 18, withLabel = true, title, labelSize = 13 }:
+  { color?: string; label: string; size?: number; withLabel?: boolean; title?: string; labelSize?: number | string }) {
   const w = size, h = size * 1.18;
   return (
     <span title={title || label} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, lineHeight: 1 }}>
@@ -262,7 +262,9 @@ export function HeraldicBadge({ color = 'var(--gold-muted)', label, size = 18, w
         <circle cx="20" cy="22" r="2.5" fill="#F5F0E8" fillOpacity=".9" />
       </svg>
       {withLabel && (
-        <span className="f-cormorant-sc" style={{ color, fontSize: Math.max(12, size * 0.62), fontWeight: 600, letterSpacing: '.12em', textTransform: 'uppercase' }}>
+        // Подпись — чернилами: цвет редкости живёт в щите. Сам он красками
+        // шкалы не проходит по контрасту как текст (COMMON — 2.4:1).
+        <span className="f-cormorant-sc" style={{ color: 'var(--ink)', fontSize: labelSize, fontWeight: 600, letterSpacing: '.14em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
           {label}
         </span>
       )}
