@@ -60,8 +60,10 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
     const onDown = (e: MouseEvent) => {
       if (identityRef.current && !identityRef.current.contains(e.target as Node)) setShowSheet(false);
     };
-    document.addEventListener('mousedown', onDown);
-    return () => document.removeEventListener('mousedown', onDown);
+    // pointerdown, а не mousedown: iOS не синтезирует мышиные события
+    // при тапе по неинтерактивному элементу, и шторка не закрывалась бы
+    document.addEventListener('pointerdown', onDown);
+    return () => document.removeEventListener('pointerdown', onDown);
   }, []);
 
   const handleHerbClick = (herb: HerbOrStub) => {

@@ -91,7 +91,7 @@ export function HerbDetailModal({ herb, onClose, isMobile = false }: Props) {
           <div style={{ color: 'var(--ink)', fontSize: 18.5, lineHeight: 1.72, textAlign: 'justify', marginBottom: 30, overflowWrap: 'break-word', hyphens: 'auto' }} lang="ru">
             {(herb.description || 'Описание отсутствует.').split('\n').map((line, i) => (
               <p key={i} className={i === 0 ? 'f-prose drop-cap' : 'f-prose'} style={{ marginBottom: line ? 10 : 0 }}>
-                {line || ' '}
+                {line || ' '}
               </p>
             ))}
           </div>
@@ -156,7 +156,7 @@ function HerbPages({ herb, onClose, color, imageUrl }:
       backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
     }}>
       <div onClick={e => e.stopPropagation()} className="modal-pop" style={{
-        position: 'relative', width: '100%', maxWidth: 560, height: '92vh',
+        position: 'relative', width: '100%', maxWidth: 560, height: '92%',
         display: 'flex', flexDirection: 'column',
         background: 'var(--birch)',
         boxShadow: '0 50px 100px rgba(0,0,0,.8), inset 0 0 0 1px rgba(26,15,0,.15)',
@@ -236,7 +236,7 @@ function HerbPages({ herb, onClose, color, imageUrl }:
                 <div style={{ color: 'var(--ink)', fontSize: 17, lineHeight: 1.72, textAlign: 'left', overflowWrap: 'break-word', hyphens: 'auto' }} lang="ru">
                   {(herb.description || 'Описание отсутствует.').split('\n').map((line, i) => (
                     <p key={i} className={i === 0 ? 'f-prose drop-cap' : 'f-prose'} style={{ marginBottom: line ? 10 : 0 }}>
-                      {line || ' '}
+                      {line || ' '}
                     </p>
                   ))}
                 </div>

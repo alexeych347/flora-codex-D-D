@@ -67,8 +67,16 @@ function collectForbidden(flow: HTMLElement, base: number): Zone[] {
     let n: Node | null;
     while ((n = walker.nextNode()) && tops.length < 3) {
       if (!n.textContent || !n.textContent.trim()) continue;
+      const lh = n.parentElement ? parseFloat(getComputedStyle(n.parentElement).lineHeight) : NaN;
       for (const r of lineRects(n, range)) {
-        tops.push(r.top - base);
+        // Буквица плавает и даёт собственный прямоугольник в полторы-две
+        // строки высотой — это не строка, и считать её за строку нельзя.
+        if (Number.isFinite(lh) && r.height > lh * 1.5) continue;
+        const t = r.top - base;
+        // Несколько текстовых узлов в одной строке дают несколько
+        // прямоугольников с одним верхом — это по-прежнему одна строка.
+        if (tops.length && Math.abs(t - tops[tops.length - 1]) < 1) continue;
+        tops.push(t);
         if (tops.length >= 3) break;
       }
     }
@@ -196,7 +204,12 @@ export function usePagedFlow(
     const vp = viewportRef.current;
     if (!vp || typeof ResizeObserver === 'undefined') return;
     let timer: ReturnType<typeof setTimeout> | null = null;
+    // observe() всегда присылает первое уведомление сразу — замер по нему
+    // пришёлся бы на середину modal-pop (0.28s) и смешал бы масштабированные
+    // координаты с немасштабированной высотой. Первый замер делает эффект выше.
+    let first = true;
     const ro = new ResizeObserver(() => {
+      if (first) { first = false; return; }
       if (timer) clearTimeout(timer);
       timer = setTimeout(measure, 120);
     });
