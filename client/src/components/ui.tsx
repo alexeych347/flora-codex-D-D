@@ -10,8 +10,12 @@ import {
    =========================================================================== */
 
 /* — флора-глиф (плейсхолдер, когда нет фото) — */
-export function PlantGlyph({ rarity, size = 120 }: { rarity: Rarity; size?: number }) {
+export function PlantGlyph({ rarity, size = 120 }: { rarity: Rarity; size?: number | string }) {
   const c = RARITY_COLORS[rarity];
+  // size — ширина глифа: число пикселей или доля плиты ('75%'). Высота
+  // всегда в 1.12 раза больше: viewBox 120x134.
+  const h = typeof size === 'number' ? size * 1.12
+    : size.endsWith('%') ? `${parseFloat(size) * 1.12}%` : size;
   const blooms: Record<Rarity, JSX.Element> = {
     COMMON: (
       <g>
@@ -52,7 +56,7 @@ export function PlantGlyph({ rarity, size = 120 }: { rarity: Rarity; size?: numb
     ),
   };
   return (
-    <svg width={size} height={size * 1.12} viewBox="0 0 120 134" style={{ display: 'block' }}>
+    <svg width={size} height={h} viewBox="0 0 120 134" style={{ display: 'block' }}>
       <line x1="60" y1="130" x2="60" y2="60" stroke="#1B4332" strokeWidth="2.5" />
       <line x1="60" y1="105" x2="38" y2="90" stroke="#1B4332" strokeWidth="1.8" />
       <line x1="60" y1="115" x2="82" y2="102" stroke="#1B4332" strokeWidth="1.8" />
@@ -141,7 +145,9 @@ export function HerbCard({ herb, onClick, isMobile = false }:
               ? <img src={herb.imageUrl} alt={herb.name}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
               : <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <PlantGlyph rarity={herb.rarity} size={isMobile ? 88 : 128} />
+                  {/* Доля плиты, а не пиксели: на мобильном плита тянется
+                      вместе с книгой (79–152px), фиксированный глиф её бы перерос */}
+                  <PlantGlyph rarity={herb.rarity} size={isMobile ? '75%' : 128} />
                 </div>}
           </div>
         </div>
@@ -183,12 +189,22 @@ export function HerbCard({ herb, onClick, isMobile = false }:
 /* — заблокированная карточка — */
 export function LockedHerbCard({ herb, isMobile = false }: { herb: HerbOrStub; isMobile?: boolean }) {
   const color = RARITY_COLORS[herb.rarity];
-  // Замок занимает ту же долю карточки, что глиф-заглушка внутри плиты
-  // открытой травы, — закрытая карточка стоит с ней в одном ряду.
-  const lock = isMobile ? 88 : 128;
+  // Замок повторяет глиф-заглушку открытой травы: закрытая карточка стоит
+  // с ней в одном ряду. Плиты у закрытой карточки нет, поэтому её размер
+  // пересчитывается от самой карточки. У открытой плита квадратная:
+  //   плита = min(ширина карточки - 16, высота карточки - 100.8)
+  // (16 — поля плиты по бокам, 100.8 — делитель с подвалом), а глиф —
+  // 0.75 плиты. cq-единицы меряют content box, то есть карточку без
+  // её падингов 14/10, отсюда +20 по ширине и +28 по высоте в пересчёте:
+  //   лок = min(0.75*(cqw + 20 - 16), 0.75*(cqh + 28 - 100.8))
+  // На десктопе книга фиксированной высоты — хватает числа.
+  const lock = isMobile
+    ? 'min(calc(75cqw + 3px), calc(75cqh - 54.6px))'
+    : 128;
   return (
     <div style={{
       position: 'relative', height: '100%',
+      containerType: 'size',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center', gap: 11,
       overflow: 'hidden', padding: '14px 10px',
@@ -199,7 +215,7 @@ export function LockedHerbCard({ herb, isMobile = false }: { herb: HerbOrStub; i
         `inset 0 0 0 2.5px ${color}88`,
       ].join(','),
     }}>
-      <svg width={lock} height={lock} viewBox="0 0 82 82" style={{ display: 'block' }}>
+      <svg viewBox="0 0 82 82" style={{ display: 'block', width: lock, height: lock, flexShrink: 0 }}>
         <circle cx="41" cy="41" r="36" fill="none" stroke={color} strokeWidth="1.1" strokeDasharray="3.5 4.5" opacity=".42" />
         <circle cx="41" cy="41" r="27" fill={`${color}10`} stroke="none" />
         <rect x="28" y="38" width="26" height="18" rx="3" fill={`${color}22`} stroke={color} strokeWidth="1.7" opacity=".8" />

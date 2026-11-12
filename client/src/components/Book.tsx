@@ -234,7 +234,17 @@ export function Book({ herbs, player, isMaster, onLogin, onLogout, onRefresh }: 
             <div
               className="book relative flex items-stretch animate-fade-in w-full"
               style={{
-                minHeight: isMobile ? '560px' : '680px',
+                // На мобильном высота книги следует за экраном. Нижняя граница
+                // calc(100dvh - 157px) — ровно хром страницы (шапка, поля,
+                // строка стрелок, подсказка свайпа): на коротком экране ничего
+                // не уходит под сгиб. Верхняя calc(100vw + 200px) держит плиту
+                // иллюстрации впритык к ширине карточки: шире неё квадрат не
+                // растёт, и под ним открывается пустота. На 360 это те же 560px,
+                // что были, на 430 книга дорастает до 630.
+                height: isMobile
+                  ? 'max(420px, min(calc(100vw + 200px), calc(100dvh - 157px)))'
+                  : undefined,
+                minHeight: isMobile ? undefined : '680px',
                 background: '#F4E4BC',
                 boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.15), 8px 8px 30px rgba(0,0,0,0.5)',
                 overflow: 'hidden',
